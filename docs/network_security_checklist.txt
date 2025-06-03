@@ -1,0 +1,31 @@
+# SafeSchool Cyber Toolkit - Secure Network Checklist
+
+This checklist outlines common security best practices for local school/institution networks.
+
+✅ Devices & Services:
+- [ ] All network devices use strong, unique admin credentials
+- [ ] Only essential services (e.g., HTTPS, SSH) are running
+- [ ] No legacy services like Telnet, FTP, or SMBv1 exposed
+
+✅ Router Configuration:
+- [ ] Admin panel is not accessible from WAN (remote internet)
+- [ ] Default passwords are changed
+- [ ] UPnP is disabled
+- [ ] Firmware is updated
+
+✅ Port Security:
+- [ ] No unnecessary open ports on router or devices
+- [ ] HTTP (port 80) is redirected or disabled in favor of HTTPS
+- [ ] Telnet (port 23), FTP (port 21), and similar insecure ports are closed
+
+✅ Monitoring & Visibility:
+- [ ] Devices on the network are known and documented
+- [ ] Intrusion detection is in place (e.g., router logs, alerts)
+- [ ] Guest and staff/student networks are separated (VLAN or separate SSIDs)
+
+✅ General:
+- [ ] Strong Wi-Fi encryption (WPA2 or WPA3) is used
+- [ ] MAC address filtering or other access control mechanisms are active
+- [ ] Devices have updated OS and antivirus
+
+# This file will be used for manual review or future automation modules.

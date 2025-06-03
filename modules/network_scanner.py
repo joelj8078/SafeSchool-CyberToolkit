@@ -2,6 +2,9 @@ import nmap
 import json
 import os
 from datetime import datetime
+import platform 
+import re
+
 
 def scan_network(subnet='192.168.1.0/24'):
     nm = nmap.PortScanner()
@@ -27,6 +30,46 @@ def scan_network(subnet='192.168.1.0/24'):
             })
     
     return results
+
+def get_default_gateway():
+    system = platform.system()
+    if system == "Windows":
+        output = os.popen("ipconfig").read()
+        match = re.search(r"Default Gateway . . . . . . . . . : ([\d\.]+)", output)
+        if match:
+            return match.group(1)
+    elif system == "Linux" or system == "Darwin":
+        output = os.popen("ip route | grep default").read()
+        return output.split()[2]
+    return None
+
+def check_router_security(gateway_ip):
+    print(f"\n[+] Scanning router at {gateway_ip} for misconfigurations...\n")
+    nm = nmap.PortScanner()
+    nm.scan(hosts=gateway_ip, arguments='-p 21,23,80,443,8080')
+
+    if gateway_ip in nm.all_hosts():
+        ports = nm[gateway_ip]['tcp'].keys()
+        weak_services = []
+        for port in ports:
+            service = nm[gateway_ip]['tcp'][port]['name']
+            if service in ['ftp', 'telnet', 'http']:
+                weak_services.append((port, service))
+
+        print(f"Router Open Ports: {list(ports)}")
+        if weak_services:
+            print(f"⚠️ Weak Services Found: {weak_services}")
+        else:
+            print("✅ No weak services found on router.")
+    else:
+        print("❌ Failed to scan router IP.")
+
+# Usage
+router_ip = get_default_gateway()
+if router_ip:
+    check_router_security(router_ip)
+else:
+    print("❌ Could not detect router IP.")
 
 def save_results_to_file(results):
     # Create 'data' directory if it doesn't exist

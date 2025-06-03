@@ -1,0 +1,20 @@
+{
+    "url": "https://example.com",
+    "headers": {
+        "Accept-Ranges": "bytes",
+        "Content-Type": "text/html",
+        "ETag": "\"84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134\"",
+        "Last-Modified": "Mon, 13 Jan 2025 20:11:20 GMT",
+        "Vary": "Accept-Encoding",
+        "Content-Encoding": "gzip",
+        "Cache-Control": "max-age=2821",
+        "Date": "Tue, 03 Jun 2025 16:46:08 GMT",
+        "Alt-Svc": "h3=\":443\"; ma=93600,h3-29=\":443\"; ma=93600,quic=\":443\"; ma=93600; v=\"43\"",
+        "Content-Length": "648",
+        "Connection": "keep-alive"
+    },
+    "technologies": [],
+    "ssl_info": {
+        "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)"
+    }
+}
