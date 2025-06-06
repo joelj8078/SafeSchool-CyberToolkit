@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import ssl
 import socket
 import json
+import os
 from urllib.parse import urlparse
 from datetime import datetime
 
@@ -21,49 +22,69 @@ def get_ssl_info(domain):
     except Exception as e:
         return {"error": str(e)}
 
+def detect_technologies(response_text, soup):
+    tech_stack = []
+
+    if soup.find('script', src=True):
+        tech_stack.append("JavaScript")
+    if soup.find('meta', attrs={"name": "generator"}):
+        tech_stack.append(soup.find('meta', attrs={"name": "generator"})["content"])
+    if "wp-content" in response_text:
+        tech_stack.append("WordPress")
+
+    return tech_stack
+
+def save_web_scan_result(result):
+    # Create only 'data/web' directory
+    folder_path = os.path.join("data", "web")
+    os.makedirs(folder_path, exist_ok=True)
+
+    # Timestamped filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"web_scan_{timestamp}.json"
+    full_path = os.path.join(folder_path, filename)
+
+    # Save result in data/web/ only
+    with open(full_path, "w") as f:
+        json.dump(result, f, indent=4)
+
+    print(f"[✔] Web scan saved to {full_path}")
+
 def scan_website(url):
     parsed = urlparse(url)
     domain = parsed.netloc or parsed.path
     if not domain:
-        return {"error": "Invalid URL"}
+        print("[!] Invalid URL format.")
+        return
 
     try:
         response = requests.get(url, timeout=10)
         headers = dict(response.headers)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Naive tech fingerprinting
-        tech_stack = []
-        if soup.find('script', src=True): tech_stack.append("JavaScript")
-        if soup.find('meta', attrs={"name": "generator"}):
-            tech_stack.append(soup.find('meta', attrs={"name": "generator"})["content"])
-
-        if "wp-content" in response.text:
-            tech_stack.append("WordPress")
-
+        technologies = detect_technologies(response.text, soup)
         ssl_info = get_ssl_info(domain) if url.startswith("https") else {}
 
         result = {
             "url": url,
             "headers": headers,
-            "technologies": tech_stack,
-            "ssl_info": ssl_info,
+            "technologies": technologies,
+            "ssl_info": ssl_info
         }
 
-        # Save results
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"data/webscan_{timestamp}.json"
-        with open(filename, "w") as f:
-            json.dump(result, f, indent=4)
-
-        print(f"[✔] Web scan saved to {filename}")
+        save_web_scan_result(result)
         return result
 
     except Exception as e:
-        print(f"[!] Failed to scan: {e}")
-        return {"error": str(e)}
+        print(f"[!] Failed to scan {url}: {e}")
+        return {
+            "url": url,
+            "headers": {},
+            "technologies": [],
+            "ssl_info": {"error": str(e)}
+        }
 
-# Run test
+# Standalone execution
 if __name__ == "__main__":
     test_url = input("Enter a website URL to scan (e.g., https://example.com): ")
     scan_website(test_url)

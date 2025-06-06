@@ -1,0 +1,21 @@
+{
+    "url": "https://www.godaddy.com",
+    "headers": {
+        "Server": "AkamaiGHost",
+        "Mime-Version": "1.0",
+        "Content-Type": "text/html",
+        "Content-Length": "367",
+        "Expires": "Fri, 06 Jun 2025 10:27:51 GMT",
+        "Date": "Fri, 06 Jun 2025 10:27:51 GMT",
+        "Connection": "close",
+        "Set-Cookie": "market=en-IN; expires=Sat, 06-Jun-2026 10:27:51 GMT; path=/; domain=.godaddy.com",
+        "X-Frame-Options": "DENY",
+        "X-ORIGIN-TAG": "frontdoor",
+        "X-ARC": "2, 6a",
+        "Server-Timing": "ak_p; desc=\"1749205671469_1750514733_60984563_19_17003_31_29_-\";dur=1"
+    },
+    "technologies": [],
+    "ssl_info": {
+        "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)"
+    }
+}

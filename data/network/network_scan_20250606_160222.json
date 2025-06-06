@@ -1,0 +1,58 @@
+{
+    "router_scan": {
+        "ip": "192.168.1.1",
+        "open_ports": [
+            21,
+            23,
+            80,
+            443,
+            8080
+        ],
+        "weak_services": [
+            [
+                21,
+                "ftp"
+            ],
+            [
+                23,
+                "telnet"
+            ],
+            [
+                80,
+                "http"
+            ]
+        ]
+    },
+    "network_devices": [
+        {
+            "ip": "192.168.1.1",
+            "hostname": "",
+            "open_ports": [
+                21,
+                53,
+                80,
+                443
+            ],
+            "weak_services": [
+                [
+                    21,
+                    "ftp"
+                ]
+            ]
+        },
+        {
+            "ip": "192.168.1.7",
+            "hostname": "",
+            "open_ports": [
+                135,
+                139,
+                445,
+                5357,
+                5432,
+                7070,
+                8080
+            ],
+            "weak_services": []
+        }
+    ]
+}

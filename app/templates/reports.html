@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan Reports</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #ccc; text-align: left; }
+        a { color: blue; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Generated Reports</h1>
+
+    <form method="POST" action="/generate_report">
+        <label>Select Report Type:</label>
+        <select name="report_type">
+            <option value="network">Network Scan</option>
+            <option value="web">Web Scan</option>
+        </select>
+        <br><br>
+        <label>JSON File:</label>
+        <input type="text" name="json_file" placeholder="e.g., network_scan_20250606_160222.json" required>
+        <br><br>
+        <button type="submit">Generate PDF</button>
+    </form>
+
+    <h2>Available PDF Reports:</h2>
+    <table>
+        <tr><th>Filename</th><th>Action</th></tr>
+        {% for file in reports %}
+        <tr>
+            <td>{{ file }}</td>
+            <td><a href="{{ url_for('download_report', filename=file) }}">Download</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
