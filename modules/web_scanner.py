@@ -27,24 +27,22 @@ def detect_technologies(response_text, soup):
 
     if soup.find('script', src=True):
         tech_stack.append("JavaScript")
-    if soup.find('meta', attrs={"name": "generator"}):
-        tech_stack.append(soup.find('meta', attrs={"name": "generator"})["content"])
+    generator_meta = soup.find('meta', attrs={"name": "generator"})
+    if generator_meta:
+        tech_stack.append(generator_meta.get("content", "Unknown Generator"))
     if "wp-content" in response_text:
         tech_stack.append("WordPress")
 
     return tech_stack
 
-def save_web_scan_result(result):
-    # Create only 'data/web' directory
+def save_web_results_to_file(result):
     folder_path = os.path.join("data", "web")
     os.makedirs(folder_path, exist_ok=True)
 
-    # Timestamped filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"web_scan_{timestamp}.json"
     full_path = os.path.join(folder_path, filename)
 
-    # Save result in data/web/ only
     with open(full_path, "w") as f:
         json.dump(result, f, indent=4)
 
@@ -55,7 +53,7 @@ def scan_website(url):
     domain = parsed.netloc or parsed.path
     if not domain:
         print("[!] Invalid URL format.")
-        return
+        return {"error": "Invalid URL format."}
 
     try:
         response = requests.get(url, timeout=10)
@@ -72,7 +70,7 @@ def scan_website(url):
             "ssl_info": ssl_info
         }
 
-        save_web_scan_result(result)
+        save_web_results_to_file(result)
         return result
 
     except Exception as e:
@@ -81,10 +79,12 @@ def scan_website(url):
             "url": url,
             "headers": {},
             "technologies": [],
-            "ssl_info": {"error": str(e)}
+            "ssl_info": {"error": str(e)},
+            "error": str(e)
         }
 
-# Standalone execution
+# Optional CLI usage
 if __name__ == "__main__":
     test_url = input("Enter a website URL to scan (e.g., https://example.com): ")
-    scan_website(test_url)
+    results = scan_website(test_url)
+    print(json.dumps(results, indent=2))

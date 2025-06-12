@@ -5,45 +5,23 @@ from datetime import datetime
 import platform
 import re
 
-def scan_network(subnet='192.168.1.0/24'):
-    nm = nmap.PortScanner()
-    print(f"\n[+] Scanning subnet: {subnet} ...")
-    
-    nm.scan(hosts=subnet, arguments='-sS -T4')
-    results = []
-
-    for host in nm.all_hosts():
-        if 'tcp' in nm[host]:
-            open_ports = [port for port in nm[host]['tcp'] if nm[host]['tcp'][port]['state'] == 'open']
-            weak_services = []
-            for port in open_ports:
-                service = nm[host]['tcp'][port]['name']
-                if service in ['ftp', 'telnet', 'smb', 'rdp']:
-                    weak_services.append((port, service))
-            
-            results.append({
-                'ip': host,
-                'hostname': nm[host].hostname(),
-                'open_ports': open_ports,
-                'weak_services': weak_services
-            })
-    
-    return results
-
 def get_default_gateway():
+    """Detect the default gateway IP based on OS."""
     system = platform.system()
-    if system == "Windows":
-        output = os.popen("ipconfig").read()
-        match = re.search(r"Default Gateway . . . . . . . . . : ([\d\.]+)", output)
-        if match:
-            return match.group(1)
-    elif system in ["Linux", "Darwin"]:
-        output = os.popen("ip route | grep default").read()
-        return output.split()[2] if output else None
+    try:
+        if system == "Windows":
+            output = os.popen("ipconfig").read()
+            match = re.search(r"Default Gateway[ .:]*([\d\.]+)", output)
+            return match.group(1) if match else None
+        elif system in ["Linux", "Darwin"]:
+            output = os.popen("ip route | grep default").read()
+            return output.split()[2] if output else None
+    except Exception:
+        return None
     return None
 
 def check_router_security(gateway_ip):
-    print(f"\n[+] Scanning router at {gateway_ip} for misconfigurations...\n")
+    """Scan router IP for open ports and weak services."""
     nm = nmap.PortScanner()
     nm.scan(hosts=gateway_ip, arguments='-p 21,23,80,443,8080')
 
@@ -53,27 +31,42 @@ def check_router_security(gateway_ip):
         "weak_services": []
     }
 
-    if gateway_ip in nm.all_hosts():
-        ports = list(nm[gateway_ip]['tcp'].keys())
-        router_result["open_ports"] = ports
+    if gateway_ip in nm.all_hosts() and 'tcp' in nm[gateway_ip]:
+        for port, details in nm[gateway_ip]['tcp'].items():
+            router_result["open_ports"].append(port)
+            if details["name"] in ['ftp', 'telnet', 'http']:
+                router_result["weak_services"].append((port, details["name"]))
 
-        for port in ports:
-            service = nm[gateway_ip]['tcp'][port]['name']
-            if service in ['ftp', 'telnet', 'http']:
-                router_result["weak_services"].append((port, service))
-
-        print(f"Router Open Ports: {router_result['open_ports']}")
-        if router_result["weak_services"]:
-            print(f"⚠️ Weak Services Found: {router_result['weak_services']}")
-        else:
-            print("✅ No weak services found on router.")
-    else:
-        print("❌ Failed to scan router IP.")
-    
     return router_result
 
+def scan_network(subnet='192.168.1.0/24'):
+    """Perform a TCP SYN scan on the given subnet."""
+    nm = nmap.PortScanner()
+    nm.scan(hosts=subnet, arguments='-sS -T4')
+    
+    results = []
+    for host in nm.all_hosts():
+        if 'tcp' not in nm[host]:
+            continue
+
+        open_ports = [port for port in nm[host]['tcp'] if nm[host]['tcp'][port]['state'] == 'open']
+        weak_services = []
+        for port in open_ports:
+            service = nm[host]['tcp'][port]['name']
+            if service in ['ftp', 'telnet', 'smb', 'rdp']:
+                weak_services.append((port, service))
+        
+        results.append({
+            'ip': host,
+            'hostname': nm[host].hostname(),
+            'open_ports': open_ports,
+            'weak_services': weak_services
+        })
+
+    return results
+
 def save_results_to_file(data, scan_type="network"):
-    # Create subfolder inside data/
+    """Save scan results to a JSON file in data/network/"""
     save_dir = os.path.join("data", scan_type)
     os.makedirs(save_dir, exist_ok=True)
 
@@ -84,26 +77,26 @@ def save_results_to_file(data, scan_type="network"):
     with open(full_path, "w") as f:
         json.dump(data, f, indent=4)
 
-    print(f"\n[✔] Scan results saved to {full_path}")
+    print(f"[✔] Scan results saved to {full_path}")
+    return full_path
 
-if __name__ == '__main__':
-    full_scan_output = {
+def run_network_scan(subnet='192.168.1.0/24'):
+    """Main function to run the full network scan pipeline."""
+    output = {
         "router_scan": {},
         "network_devices": []
     }
 
-    router_ip = get_default_gateway()
-    if router_ip:
-        full_scan_output["router_scan"] = check_router_security(router_ip)
-    else:
-        print("❌ Could not detect router IP.")
+    gateway_ip = get_default_gateway()
+    if gateway_ip:
+        output["router_scan"] = check_router_security(gateway_ip)
 
-    network_devices = scan_network()
-    for device in network_devices:
-        print(f"\n[+] IP: {device['ip']}")
-        print(f"    Hostname: {device['hostname']}")
-        print(f"    Open Ports: {device['open_ports']}")
-        print(f"    Weak Services: {device['weak_services']}")
+    output["network_devices"] = scan_network(subnet=subnet)
+    save_results_to_file(output, scan_type="network")
 
-    full_scan_output["network_devices"] = network_devices
-    save_results_to_file(full_scan_output, scan_type="network")
+    return output  # Dict returned for use in Flask view
+
+# Prevent running scans on import
+if __name__ == '__main__':
+    scan_data = run_network_scan()
+    print(json.dumps(scan_data, indent=4))

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Scanner | SafeSchool Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-blue-900 text-white p-4 shadow">
+        <h1 class="text-2xl font-bold">🔍 Network Scanner</h1>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6">
+        <form action="/run_network_scan" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
+            <label for="target" class="block text-gray-700 font-bold mb-2">Target Subnet (CIDR):</label>
+            <input type="text" name="target" id="target" placeholder="e.g. 192.168.1.0/24"
+                   class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline" required>
+            <button type="submit"
+                    class="mt-4 bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
+                Start Scan
+            </button>
+        </form>
+
+        {% if results %}
+        <section class="bg-white shadow-md rounded p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">🔐 Router Scan Results</h2>
+            {% if results.router_scan %}
+                <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
+                <p><strong>Open Ports:</strong> {{ results.router_scan.open_ports }}</p>
+                <p><strong>Weak Services:</strong> {{ results.router_scan.weak_services }}</p>
+            {% else %}
+                <p class="text-red-600">Router IP could not be detected.</p>
+            {% endif %}
+        </section>
+
+        <section class="bg-white shadow-md rounded p-6 mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">📡 Network Devices</h2>
+            {% for device in results.network_devices %}
+                <div class="mb-4 border-b border-gray-200 pb-4">
+                    <p><strong>IP:</strong> {{ device.ip }}</p>
+                    <p><strong>Hostname:</strong> {{ device.hostname }}</p>
+                    <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
+                    <p><strong>Weak Services:</strong> {{ device.weak_services }}</p>
+                </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </main>
+
+    <footer class="bg-blue-900 text-white text-center py-3">
+        &copy; 2025 SafeSchool Cyber Toolkit
+    </footer>
+
+</body>
+</html>

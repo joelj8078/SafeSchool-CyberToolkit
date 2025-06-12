@@ -1,41 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Scan Reports</title>
+    <title>Generated Reports</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h1 { margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border-bottom: 1px solid #ccc; text-align: left; }
-        a { color: blue; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f2f2f2;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
-    <h1>Generated Reports</h1>
-
-    <form method="POST" action="/generate_report">
-        <label>Select Report Type:</label>
-        <select name="report_type">
-            <option value="network">Network Scan</option>
-            <option value="web">Web Scan</option>
-        </select>
-        <br><br>
-        <label>JSON File:</label>
-        <input type="text" name="json_file" placeholder="e.g., network_scan_20250606_160222.json" required>
-        <br><br>
-        <button type="submit">Generate PDF</button>
-    </form>
-
-    <h2>Available PDF Reports:</h2>
-    <table>
-        <tr><th>Filename</th><th>Action</th></tr>
-        {% for file in reports %}
-        <tr>
-            <td>{{ file }}</td>
-            <td><a href="{{ url_for('download_report', filename=file) }}">Download</a></td>
-        </tr>
+    <h1>Available PDF Reports</h1>
+    <ul>
+        {% for report in reports %}
+            <li><a href="{{ url_for('main.download_report', filename=report) }}">{{ report }}</a></li>
+        {% else %}
+            <li>No reports found.</li>
         {% endfor %}
-    </table>
+    </ul>
+
+    <hr>
+    <h2>Generate a Report</h2>
+    <form action="{{ url_for('main.generate_report') }}" method="post">
+        <label for="report_type">Type:</label>
+        <select name="report_type" id="report_type" required>
+            <option value="network">Network</option>
+            <option value="web">Web</option>
+        </select>
+
+        <label for="json_file">JSON Filename:</label>
+        <input type="text" name="json_file" id="json_file" placeholder="e.g., network_scan_20250606_160222.json" required>
+
+        <button type="submit">Generate</button>
+    </form>
 </body>
 </html>
