@@ -4,26 +4,47 @@ import os
 from datetime import datetime
 import platform
 import re
+import socket
+import psutil
+
 
 def get_default_gateway():
-    """Detect the default gateway IP based on OS."""
     system = platform.system()
+    print(f"[DEBUG] Detected platform: {system}")
     try:
         if system == "Windows":
             output = os.popen("ipconfig").read()
-            match = re.search(r"Default Gateway[ .:]*([\d\.]+)", output)
-            return match.group(1) if match else None
+            print("[DEBUG] ipconfig output:\n", output)
+            matches = re.findall(r"Default Gateway[ .:]*([\d\.]+)", output)
+            print(f"[DEBUG] Matches found: {matches}")
+            for ip in matches:
+                if ip and ip != "0.0.0.0":
+                    print(f"[DEBUG] Selected Gateway IP: {ip}")
+                    return ip
         elif system in ["Linux", "Darwin"]:
             output = os.popen("ip route | grep default").read()
-            return output.split()[2] if output else None
-    except Exception:
+            print("[DEBUG] ip route output:\n", output)
+            gateway = output.split()[2] if output else None
+            print(f"[DEBUG] Linux Gateway IP: {gateway}")
+            return gateway
+    except Exception as e:
+        print(f"[ERROR] Failed to get gateway: {e}")
         return None
     return None
 
 def check_router_security(gateway_ip):
-    """Scan router IP for open ports and weak services."""
+    print(f"[INFO] Scanning router at {gateway_ip} ...")
     nm = nmap.PortScanner()
-    nm.scan(hosts=gateway_ip, arguments='-p 21,23,80,443,8080')
+    try:
+        nm.scan(hosts=gateway_ip, arguments='-p 21-1024')  # Wider range for router ports
+    except Exception as e:
+        print("[ERROR] Nmap failed to scan router:", e)
+        return {
+            "ip": gateway_ip,
+            "open_ports": [],
+            "weak_services": [],
+            "error": str(e)
+        }
 
     router_result = {
         "ip": gateway_ip,
@@ -36,14 +57,21 @@ def check_router_security(gateway_ip):
             router_result["open_ports"].append(port)
             if details["name"] in ['ftp', 'telnet', 'http']:
                 router_result["weak_services"].append((port, details["name"]))
+    else:
+        print("[WARN] No open ports found or router not responding to scan.")
 
     return router_result
 
+
 def scan_network(subnet='192.168.1.0/24'):
-    """Perform a TCP SYN scan on the given subnet."""
+    print(f"[INFO] Scanning local network: {subnet}")
     nm = nmap.PortScanner()
-    nm.scan(hosts=subnet, arguments='-sS -T4')
-    
+    try:
+        nm.scan(hosts=subnet, arguments='-sS -T4')
+    except Exception as e:
+        print("[ERROR] Network scan failed:", e)
+        return []
+
     results = []
     for host in nm.all_hosts():
         if 'tcp' not in nm[host]:
@@ -55,7 +83,7 @@ def scan_network(subnet='192.168.1.0/24'):
             service = nm[host]['tcp'][port]['name']
             if service in ['ftp', 'telnet', 'smb', 'rdp']:
                 weak_services.append((port, service))
-        
+
         results.append({
             'ip': host,
             'hostname': nm[host].hostname(),
@@ -65,8 +93,78 @@ def scan_network(subnet='192.168.1.0/24'):
 
     return results
 
+
+def get_local_system_info():
+    info = {}
+
+    hostname = socket.gethostname()
+    try:
+        ip_address = socket.gethostbyname(hostname)
+    except socket.gaierror:
+        ip_address = "Unavailable"
+
+    info["hostname"] = hostname
+    info["ip_address"] = ip_address
+    info["os"] = platform.system()
+    info["os_version"] = platform.version()
+    info["architecture"] = platform.machine()
+
+    # CPU
+    info["cpu_cores"] = psutil.cpu_count(logical=False)
+    info["cpu_threads"] = psutil.cpu_count(logical=True)
+    info["cpu_usage_percent"] = psutil.cpu_percent(interval=1)
+
+    # RAM
+    mem = psutil.virtual_memory()
+    info["memory_total_gb"] = round(mem.total / (1024 ** 3), 2)
+    info["memory_used_gb"] = round(mem.used / (1024 ** 3), 2)
+    info["memory_usage_percent"] = mem.percent
+
+    # Disk
+    disks = []
+    for part in psutil.disk_partitions():
+        try:
+            usage = psutil.disk_usage(part.mountpoint)
+            disks.append({
+                "device": part.device,
+                "mountpoint": part.mountpoint,
+                "fstype": part.fstype,
+                "total_gb": round(usage.total / (1024 ** 3), 2),
+                "used_gb": round(usage.used / (1024 ** 3), 2),
+                "free_gb": round(usage.free / (1024 ** 3), 2),
+                "usage_percent": usage.percent
+            })
+        except PermissionError:
+            continue
+    info["disks"] = disks
+
+    # Network interfaces
+    interfaces = []
+    net_if_addrs = psutil.net_if_addrs()
+    net_if_stats = psutil.net_if_stats()
+
+    for iface, addrs in net_if_addrs.items():
+        iface_data = {
+            "interface": iface,
+            "is_up": net_if_stats[iface].isup if iface in net_if_stats else False,
+            "speed_mbps": net_if_stats[iface].speed if iface in net_if_stats else None,
+            "addresses": []
+        }
+        for addr in addrs:
+            iface_data["addresses"].append({
+                "family": str(addr.family),
+                "address": addr.address,
+                "netmask": addr.netmask,
+                "broadcast": addr.broadcast
+            })
+        interfaces.append(iface_data)
+
+    info["network_interfaces"] = interfaces
+
+    return info
+
+
 def save_results_to_file(data, scan_type="network"):
-    """Save scan results to a JSON file in data/network/"""
     save_dir = os.path.join("data", scan_type)
     os.makedirs(save_dir, exist_ok=True)
 
@@ -80,23 +178,26 @@ def save_results_to_file(data, scan_type="network"):
     print(f"[✔] Scan results saved to {full_path}")
     return full_path
 
-def run_network_scan(subnet='192.168.1.0/24'):
-    """Main function to run the full network scan pipeline."""
+
+def run_network_scan():
     output = {
+        "system_info": get_local_system_info(),
         "router_scan": {},
         "network_devices": []
     }
 
     gateway_ip = get_default_gateway()
+    print(f"[DEBUG] Detected Default Gateway: {gateway_ip}")  # ← Add this line
+
     if gateway_ip:
         output["router_scan"] = check_router_security(gateway_ip)
 
-    output["network_devices"] = scan_network(subnet=subnet)
+    output["network_devices"] = scan_network()
     save_results_to_file(output, scan_type="network")
 
-    return output  # Dict returned for use in Flask view
+    return output
 
-# Prevent running scans on import
+
 if __name__ == '__main__':
-    scan_data = run_network_scan()
-    print(json.dumps(scan_data, indent=4))
+    results = run_network_scan()
+    print(json.dumps(results, indent=4))

@@ -12,18 +12,61 @@
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-6">
+
         <form action="/run_network_scan" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-            <label for="target" class="block text-gray-700 font-bold mb-2">Target Subnet (CIDR):</label>
-            <input type="text" name="target" id="target" placeholder="e.g. 192.168.1.0/24"
-                   class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline" required>
+            <p class="text-gray-700 mb-2">Click the button below to scan your system, router, and local network:</p>
             <button type="submit"
-                    class="mt-4 bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
-                Start Scan
+                    class="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
+                Run Full Scan
             </button>
         </form>
 
         {% if results %}
-        <section class="bg-white shadow-md rounded p-6">
+
+        <!-- System Info -->
+        <section class="bg-white shadow-md rounded p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">🖥️ Local System Info</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
+                <p><strong>Hostname:</strong> {{ results.system_info.hostname }}</p>
+                <p><strong>IP Address:</strong> {{ results.system_info.ip_address }}</p>
+                <p><strong>OS:</strong> {{ results.system_info.os }} {{ results.system_info.os_version }}</p>
+                <p><strong>Architecture:</strong> {{ results.system_info.architecture }}</p>
+                <p><strong>CPU Cores:</strong> {{ results.system_info.cpu_cores }}</p>
+                <p><strong>CPU Threads:</strong> {{ results.system_info.cpu_threads }}</p>
+                <p><strong>CPU Usage:</strong> {{ results.system_info.cpu_usage_percent }}%</p>
+                <p><strong>Total RAM:</strong> {{ results.system_info.memory_total_gb }} GB</p>
+                <p><strong>Used RAM:</strong> {{ results.system_info.memory_used_gb }} GB ({{ results.system_info.memory_usage_percent }}%)</p>
+                <p><strong>Disk Usage:</strong> {{ results.system_info.disks[0].used_gb }}/{{ results.system_info.disks[0].total_gb }} GB ({{ results.system_info.disks[0].usage_percent }}%)</p>
+            </div>
+
+            {% if results.system_info.disks|length > 1 %}
+            <div class="mt-4 text-sm">
+                <h3 class="font-semibold text-gray-700 mb-2">Additional Disk Partitions:</h3>
+                <ul class="list-disc pl-5">
+                    {% for disk in results.system_info.disks[1:] %}
+                        <li>{{ disk.device }} ({{ disk.mountpoint }}) - {{ disk.used_gb }}/{{ disk.total_gb }} GB</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="mt-6 text-sm">
+                <h3 class="font-semibold text-gray-700 mb-2">Network Interfaces:</h3>
+                {% for iface in results.system_info.network_interfaces %}
+                    <div class="mb-2">
+                        <p><strong>{{ iface.interface }}</strong> ({{ "UP" if iface.is_up else "DOWN" }}, {{ iface.speed_mbps }} Mbps)</p>
+                        <ul class="list-disc pl-6 text-gray-600">
+                            {% for addr in iface.addresses %}
+                                <li>{{ addr.family }}: {{ addr.address }} (Mask: {{ addr.netmask }})</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Router Scan -->
+        <section class="bg-white shadow-md rounded p-6 mb-6">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">🔐 Router Scan Results</h2>
             {% if results.router_scan %}
                 <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
@@ -34,7 +77,8 @@
             {% endif %}
         </section>
 
-        <section class="bg-white shadow-md rounded p-6 mt-6">
+        <!-- Network Devices -->
+        <section class="bg-white shadow-md rounded p-6">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">📡 Network Devices</h2>
             {% for device in results.network_devices %}
                 <div class="mb-4 border-b border-gray-200 pb-4">
@@ -45,6 +89,7 @@
                 </div>
             {% endfor %}
         </section>
+
         {% endif %}
     </main>
 

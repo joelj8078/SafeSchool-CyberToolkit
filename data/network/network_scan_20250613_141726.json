@@ -1,0 +1,8 @@
+{
+    "router_scan": {
+        "ip": ".",
+        "open_ports": [],
+        "weak_services": []
+    },
+    "network_devices": []
+}

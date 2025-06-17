@@ -1,0 +1,25 @@
+{
+    "router_scan": {
+        "ip": ".",
+        "open_ports": [],
+        "weak_services": []
+    },
+    "network_devices": [
+        {
+            "ip": "192.168.1.1",
+            "hostname": "",
+            "open_ports": [
+                21,
+                53,
+                80,
+                443
+            ],
+            "weak_services": [
+                [
+                    21,
+                    "ftp"
+                ]
+            ]
+        }
+    ]
+}

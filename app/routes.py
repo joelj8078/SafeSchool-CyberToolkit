@@ -1,7 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, send_from_directory
 import os
-from datetime import datetime
-from modules.network_scanner import scan_network, get_default_gateway, check_router_security, save_results_to_file
+from modules.network_scanner import (
+    run_network_scan,
+    get_local_system_info,
+    save_results_to_file
+)
 from modules.web_scanner import scan_website, save_web_results_to_file
 from modules.report_network import generate_network_report
 from modules.report_web import generate_web_report
@@ -24,19 +27,8 @@ def network_scanner():
 
 @main.route("/run_network_scan", methods=["POST"])
 def run_network_scan_route():
-    subnet = request.form.get("target") or "192.168.1.0/24"
-
-    gateway_ip = get_default_gateway()
-    router_results = check_router_security(gateway_ip) if gateway_ip else {}
-
-    network_devices = scan_network(subnet=subnet)
-    full_results = {
-        "router_scan": router_results,
-        "network_devices": network_devices
-    }
-
-    save_results_to_file(full_results, scan_type="network")
-    return render_template("network_scanner.html", results=full_results)
+    scan_results = run_network_scan()
+    return render_template("network_scanner.html", results=scan_results)
 
 # -------------------- WEB SCANNER --------------------
 
@@ -46,21 +38,24 @@ def web_scanner():
 
 @main.route("/run_web_scan", methods=["POST"])
 def run_web_scan():
-    url = request.form.get("url")  # match the HTML input name (not "target_url")
-    
+    url = request.form.get("url")
+
     if not url:
-        return render_template("web_scanner.html", results=None, error="Please provide a target URL.")
-    
-    results = scan_website(url)  # your custom scanner logic
-    save_web_results_to_file(results)  # if this saves to a JSON/PDF etc.
-    
-    return render_template("web_scanner.html", results=results, error=None)
+        return render_template("web_scanner.html", results=None, error="Please provide a valid URL.")
+
+    results = scan_website(url)
+
+    # Save results only if scan succeeded
+    if "error" not in results:
+        save_web_results_to_file(results)
+
+    return render_template("web_scanner.html", results=results, error=results.get("error"))
 
 # -------------------- REPORTS --------------------
 
 @main.route("/reports")
 def reports_dashboard():
-    reports = [f for f in os.listdir(REPORT_DIR) if f.endswith(".pdf")]
+    reports = [f for f in os.listdir(REPORTS_DIR) if f.endswith(".pdf")]
     reports.sort(reverse=True)
     return render_template("reports.html", reports=reports)
 
