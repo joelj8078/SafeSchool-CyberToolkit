@@ -8,8 +8,9 @@ import time
 from urllib.parse import urlparse, urljoin, urlencode
 from datetime import datetime
 import whois
+from modules.utils import generate_radar_chart
 
-# Constants
+# === Constants ===
 COMMON_PATHS = [
     "/admin", "/login", "/robots.txt", "/.env", "/config",
     "/phpinfo.php", "/sitemap.xml", "/backup.zip", "/.git"
@@ -20,6 +21,7 @@ SECURITY_HEADERS = [
     "X-Content-Type-Options", "Referrer-Policy", "Permissions-Policy"
 ]
 
+# === SSL Certificate Info ===
 def get_ssl_info(domain):
     context = ssl.create_default_context()
     try:
@@ -38,6 +40,7 @@ def get_ssl_info(domain):
     except Exception as e:
         return {"error": str(e)}
 
+# === Technology Detection ===
 def detect_technologies(response_text, soup):
     tech_stack = []
 
@@ -54,6 +57,7 @@ def detect_technologies(response_text, soup):
 
     return list(set(tech_stack))
 
+# === Security Headers Check ===
 def check_security_headers(headers):
     present, missing = [], []
     for header in SECURITY_HEADERS:
@@ -63,6 +67,7 @@ def check_security_headers(headers):
             missing.append(header)
     return {"present": present, "missing": missing}
 
+# === Common Sensitive Paths Check ===
 def check_common_paths(base_url):
     discovered = []
     for path in COMMON_PATHS:
@@ -75,18 +80,23 @@ def check_common_paths(base_url):
             continue
     return discovered
 
+# === Open Redirect Check ===
 def check_open_redirect(base_url):
     try:
-        test_url = urljoin(base_url, "/redirect-test")
-        payload = {"next": "https://evil.com"}
-        redirect_url = f"{test_url}?{urlencode(payload)}"
-        res = requests.get(redirect_url, allow_redirects=False, timeout=5)
-        if res.status_code in [301, 302] and "evil.com" in res.headers.get("Location", ""):
-            return {"vulnerable": True, "location": res.headers.get("Location")}
+        test_paths = ["/redirect-test", "/login", "/auth"]
+        for path in test_paths:
+            test_url = urljoin(base_url, path)
+            for param in ["next", "url", "redirect"]:
+                payload = {param: "https://evil.com"}
+                redirect_url = f"{test_url}?{urlencode(payload)}"
+                res = requests.get(redirect_url, allow_redirects=False, timeout=5)
+                if res.status_code in [301, 302] and "evil.com" in res.headers.get("Location", ""):
+                    return {"vulnerable": True, "location": res.headers.get("Location")}
     except Exception as e:
         return {"error": str(e)}
     return {"vulnerable": False}
 
+# === WHOIS Lookup ===
 def get_domain_whois(domain):
     try:
         w = whois.whois(domain)
@@ -99,6 +109,7 @@ def get_domain_whois(domain):
     except Exception as e:
         return {"error": str(e)}
 
+# === Security Score Calculation ===
 def calculate_security_score(security_headers, ssl_info, sensitive_paths):
     score = 10
     score -= len(security_headers["missing"])
@@ -107,6 +118,7 @@ def calculate_security_score(security_headers, ssl_info, sensitive_paths):
     score -= min(len(sensitive_paths), 3)  # Cap penalty for sensitive paths
     return max(score, 0)
 
+# === Save to JSON ===
 def save_web_results_to_file(result):
     folder_path = os.path.join("data", "web")
     os.makedirs(folder_path, exist_ok=True)
@@ -117,6 +129,7 @@ def save_web_results_to_file(result):
         json.dump(result, f, indent=4)
     print(f"[✔] Web scan saved to {full_path}")
 
+# === Web Scanner Orchestrator ===
 def scan_website(url):
     parsed = urlparse(url)
     domain = parsed.netloc or parsed.path
@@ -154,6 +167,7 @@ def scan_website(url):
         )
 
         save_web_results_to_file(result)
+        generate_radar_chart(result)  # Save radar chart to static/images/web_radar.png
         return result
 
     except Exception as e:
@@ -172,6 +186,7 @@ def scan_website(url):
             "security_score": 0
         }
 
+# === CLI Entrypoint ===
 if __name__ == "__main__":
     test_url = input("Enter a website URL to scan (e.g., https://example.com): ")
     result = scan_website(test_url)
