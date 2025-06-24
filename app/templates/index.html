@@ -4,61 +4,77 @@
     <meta charset="UTF-8">
     <title>SafeSchool Cyber Toolkit Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 min-h-screen font-sans flex flex-col">
 
     <!-- Navbar -->
-    <nav class="bg-blue-700 text-white shadow-lg px-6 py-4">
+    <nav class="bg-blue-900 text-white shadow px-6 py-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">SafeSchool Cyber Toolkit</h1>
-            <div class="space-x-4">
+            <h1 class="text-2xl font-bold">🛡️ SafeSchool Cyber Toolkit</h1>
+            <div class="space-x-4 text-sm md:text-base">
                 <a href="/" class="hover:underline">Home</a>
                 <a href="/network_scanner" class="hover:underline">Network</a>
                 <a href="/web_scanner" class="hover:underline">Web</a>
                 <a href="/reports" class="hover:underline">Reports</a>
+                <a href="/feedback" class="hover:underline">Feedback</a>
+                <a href="/phishing_awareness" class="hover:underline">Phishing</a>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-10">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-8 text-center">Choose a Testing Module</h2>
+    <main class="flex-grow container mx-auto px-6 py-12">
+        <h2 class="text-4xl font-semibold text-gray-800 text-center mb-10">Choose a Cybersecurity Module</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Network Scanner Card -->
-            <a href="/network_scanner" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition">
-                <div class="flex items-center justify-center mb-4">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/network-card.png" alt="Network" />
-                </div>
-                <h3 class="text-xl font-semibold text-center mb-2">Network Scanner</h3>
-                <p class="text-center text-gray-600">Scan your local network for open ports, services, and vulnerabilities.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Network Scanner -->
+            <a href="/network_scanner" class="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 text-center">
+                <img src="https://img.icons8.com/ios-filled/64/000000/network-card.png" alt="Network" class="mx-auto mb-4" />
+                <h3 class="text-xl font-semibold mb-2">Network Scanner</h3>
+                <p class="text-gray-600 text-sm">Scan your local network for devices, open ports, services, and possible misconfigurations.</p>
             </a>
 
-            <!-- Web Scanner Card -->
-            <a href="/web_scanner" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition">
-                <div class="flex items-center justify-center mb-4">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/web.png" alt="Web" />
-                </div>
-                <h3 class="text-xl font-semibold text-center mb-2">Web Scanner</h3>
-                <p class="text-center text-gray-600">Audit web applications for OWASP vulnerabilities and misconfigurations.</p>
+            <!-- Web Scanner -->
+            <a href="/web_scanner" class="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 text-center">
+                <img src="https://img.icons8.com/ios-filled/64/000000/web.png" alt="Web" class="mx-auto mb-4" />
+                <h3 class="text-xl font-semibold mb-2">Web Scanner</h3>
+                <p class="text-gray-600 text-sm">Audit web applications for OWASP Top 10 vulnerabilities and security headers.</p>
             </a>
 
-            <!-- Reports Card -->
-            <a href="/reports" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition">
-                <div class="flex items-center justify-center mb-4">
-                    <img src="https://img.icons8.com/ios-filled/50/000000/report-file.png" alt="Reports" />
-                </div>
-                <h3 class="text-xl font-semibold text-center mb-2">Reports</h3>
-                <p class="text-center text-gray-600">View, download or analyze generated PDF reports for past scans.</p>
+            <!-- Reports -->
+            <a href="/reports" class="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 text-center">
+                <img src="https://img.icons8.com/ios-filled/64/000000/report-file.png" alt="Reports" class="mx-auto mb-4" />
+                <h3 class="text-xl font-semibold mb-2">Reports</h3>
+                <p class="text-gray-600 text-sm">View and download PDF reports of completed network and web scans.</p>
             </a>
+
+            <!-- Feedback -->
+            <a href="/feedback" class="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 text-center">
+                <img src="https://img.icons8.com/ios-filled/64/000000/feedback.png" alt="Feedback" class="mx-auto mb-4" />
+                <h3 class="text-xl font-semibold mb-2">Feedback</h3>
+                <p class="text-gray-600 text-sm">Submit suggestions, report bugs, or provide general feedback to improve the toolkit.</p>
+            </a>
+
+            <!-- Phishing Awareness -->
+            <a href="/phishing_awareness" class="bg-white rounded-lg shadow-md hover:shadow-xl transition p-6 text-center">
+                <img src="https://img.icons8.com/ios-filled/64/000000/phishing.png" alt="Phishing" class="mx-auto mb-4" />
+                <h3 class="text-xl font-semibold mb-2">Phishing Awareness</h3>
+                <p class="text-gray-600 text-sm">Learn to spot phishing attempts with sample scam emails and safety tips.</p>
+            </a>
+
+            <!-- Cyber Hygiene (future) -->
+            <div class="bg-gray-200 rounded-lg shadow-inner p-6 text-center opacity-80">
+                <img src="https://img.icons8.com/ios-filled/64/000000/privacy.png" alt="Hygiene" class="mx-auto mb-4 opacity-70" />
+                <h3 class="text-xl font-semibold mb-2 text-gray-700">Cyber Hygiene (Coming Soon)</h3>
+                <p class="text-gray-500 text-sm">Tips and best practices to maintain online safety and digital hygiene.</p>
+            </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-200 text-center py-4 mt-10 text-sm text-gray-600">
-        &copy; 2025 SafeSchool Cyber Toolkit. Developed with ❤️ at IIIT Kottayam.
+    <footer class="bg-blue-900 text-white text-center text-sm py-4 mt-10">
+        &copy; 2025 SafeSchool Cyber Toolkit · Developed at IIIT Kottayam with ❤️
     </footer>
 
 </body>

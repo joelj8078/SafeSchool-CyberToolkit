@@ -167,7 +167,8 @@ def scan_website(url):
         )
 
         save_web_results_to_file(result)
-        generate_radar_chart(result)  # Save radar chart to static/images/web_radar.png
+        chart_filename = generate_radar_chart(result)
+        result["radar_chart"] = chart_filename
         return result
 
     except Exception as e:

@@ -1,0 +1,66 @@
+{
+    "url": "https://www.godaddy.com",
+    "status_code": 403,
+    "headers": {
+        "Server": "AkamaiGHost",
+        "Mime-Version": "1.0",
+        "Content-Type": "text/html",
+        "Content-Length": "367",
+        "Expires": "Tue, 24 Jun 2025 17:03:12 GMT",
+        "Date": "Tue, 24 Jun 2025 17:03:12 GMT",
+        "Connection": "close",
+        "Set-Cookie": "market=en-IN; expires=Wed, 24-Jun-2026 17:03:12 GMT; path=/; domain=.godaddy.com",
+        "X-Frame-Options": "DENY",
+        "X-ORIGIN-TAG": "frontdoor",
+        "X-ARC": "2, 6a",
+        "Server-Timing": "ak_p; desc=\"1750784592213_387987796_164511216_25_15257_902_37_-\";dur=1"
+    },
+    "technologies": [],
+    "ssl_info": {
+        "issuer": {
+            "countryName": "US",
+            "stateOrProvinceName": "Arizona",
+            "localityName": "Scottsdale",
+            "organizationName": "GoDaddy.com, Inc.",
+            "organizationalUnitName": "http://certs.godaddy.com/repository/",
+            "commonName": "Go Daddy Secure Certificate Authority - G2"
+        },
+        "subject": {
+            "countryName": "US",
+            "stateOrProvinceName": "Arizona",
+            "localityName": "Tempe",
+            "organizationName": "GoDaddy Inc.",
+            "commonName": "*.godaddy.com"
+        },
+        "valid_from": "Oct 17 16:36:33 2024 GMT",
+        "valid_until": "Nov 18 16:36:33 2025 GMT",
+        "expires_in_days": 146
+    },
+    "security_headers": {
+        "present": [
+            "X-Frame-Options"
+        ],
+        "missing": [
+            "Content-Security-Policy",
+            "Strict-Transport-Security",
+            "X-Content-Type-Options",
+            "Referrer-Policy",
+            "Permissions-Policy"
+        ]
+    },
+    "sensitive_paths_found": [],
+    "open_redirect_test": {
+        "vulnerable": false
+    },
+    "whois_info": {
+        "domain_name": "GODADDY.COM",
+        "registrar": "GoDaddy.com, LLC",
+        "creation_date": "[datetime.datetime(1999, 3, 2, 5, 0), datetime.datetime(1999, 3, 2, 0, 0)]",
+        "expiration_date": "[datetime.datetime(2032, 11, 1, 11, 59, 59), datetime.datetime(2032, 11, 1, 6, 59, 59)]"
+    },
+    "performance": {
+        "response_time_ms": 1668.78,
+        "content_length_kb": 0.36
+    },
+    "security_score": 5
+}
