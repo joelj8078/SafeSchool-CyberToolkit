@@ -7,3 +7,29 @@ Message: Improve UI
 [2025-06-24 12:36:33] [FEEDBACK] From: Joel (joeljacob2909@gmail.com)
 Message: Improve UI
 
+[2025-06-25 21:59:47] [ERROR] Failed to generate phishing PDF report: list index out of range
+
+[2025-06-25 22:07:07] [ERROR] Failed to generate phishing PDF report: list index out of range
+
+[2025-06-25 22:16:21] [ERROR] PDF generation failed: list index out of range
+
+[2025-06-25 22:16:38] [ERROR] PDF generation failed: list index out of range
+
+[2025-06-25 22:30:22] [ERROR] PDF generation failed: list index out of range
+
+[2025-06-25 22:41:31] [ERROR] PDF generation failed: list index out of range
+
+[2025-06-26 00:41:08] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+
+[2025-06-26 00:44:20] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+
+[2025-06-26 00:45:41] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+
+[2025-06-26 00:46:56] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+
+[2025-06-26 01:18:11] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 741-742: ordinal not in range(256)
+
+[2025-06-26 01:25:20] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+
+[2025-06-26 01:25:51] [ERROR] PDF generation failed: 'latin-1' codec can't encode characters in position 269-270: ordinal not in range(256)
+

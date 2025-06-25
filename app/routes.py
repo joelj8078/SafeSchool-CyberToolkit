@@ -6,6 +6,9 @@ from modules.web_scanner import scan_website, save_web_results_to_file
 from modules.report_network import generate_network_report
 from modules.report_web import generate_web_report
 from modules.phishing_module import generate_phishing_email
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from modules.report_phishing import generate_phishing_analysis_pdf
+
 
 main = Blueprint(
     "main",
@@ -110,6 +113,7 @@ def phishing_awareness():
         email = generate_phishing_email()
     return render_template("phishing_awareness.html", email=email)
 
+# ---------------- PHISHING EMAIL ANALYZER ----------------
 @main.route("/analyze_email", methods=["POST"])
 def analyze_email():
     content = request.form.get("email_content")
@@ -117,28 +121,58 @@ def analyze_email():
 
     if not content:
         findings.append("No content provided.")
+        content = "[No content provided]"
     else:
         lower_content = content.lower()
 
+        # --- Rule-based checks ---
         if "click here" in lower_content or "login" in lower_content:
-            findings.append("⚠️ Suspicious links or login prompts detected.")
+            findings.append("Suspicious links or login prompts detected.")
         if "urgent" in lower_content or "immediately" in lower_content:
-            findings.append("⚠️ Urgency or pressure tactics used.")
+            findings.append("Urgency or pressure tactics used.")
         if "verify your account" in lower_content:
-            findings.append("⚠️ Request for account verification is common in phishing.")
+            findings.append("Request for account verification is common in phishing.")
         if "password" in lower_content:
-            findings.append("⚠️ Mentions of password changes or resets.")
+            findings.append("Mentions of password changes or resets.")
         if "attachment" in lower_content:
-            findings.append("⚠️ Mentions of attachments—beware of malware.")
+            findings.append("Mentions of attachments—beware of malware.")
         if "unsubscribe" not in lower_content and ("marketing" in lower_content or "promotion" in lower_content):
-            findings.append("⚠️ No unsubscribe link in a marketing-style message.")
+            findings.append("No unsubscribe link in a marketing-style message.")
         if "http://" in lower_content and "https://" not in lower_content:
-            findings.append("⚠️ Insecure HTTP link detected.")
+            findings.append("Insecure HTTP link detected.")
 
-        if not findings:
-            findings.append("✅ No obvious phishing indicators found—but stay cautious.")
+        # --- Tone analysis with VADER ---
+        try:
+            analyzer = SentimentIntensityAnalyzer()
+            scores = analyzer.polarity_scores(content)
 
-    return render_template("phishing_awareness.html", analysis={"findings": findings})
+            if scores["neg"] > 0.4:
+                findings.append("Strong negative tone — potential fear/scare tactic.")
+            if scores["pos"] > 0.4 and any(word in lower_content for word in ["congratulations", "winner", "prize", "offer"]):
+                findings.append("Positive tone with tempting words — could be bait.")
+            if scores["compound"] < -0.5:
+                findings.append("Overall threatening or hostile tone.")
+        except Exception as e:
+            findings.append("Sentiment analysis failed.")
+            log_feedback(f"[ERROR] VADER analysis failed: {str(e)}")
+
+    # Default if no indicators found
+    if not findings:
+        findings = ["No obvious phishing indicators found — but stay cautious."]
+
+    # Save report
+    try:
+        generate_phishing_analysis_pdf(content, findings)
+    except Exception as e:
+        log_feedback(f"[ERROR] PDF generation failed: {str(e)}")
+
+    return render_template(
+        "phishing_awareness.html",
+        analysis={"findings": findings},
+        email=None
+    )
+
+
 
 
 

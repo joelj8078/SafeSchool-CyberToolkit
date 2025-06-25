@@ -1,65 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Generated Reports</title>
+    <meta charset="UTF-8">
+    <title>📄 Generated Reports | SafeSchool Toolkit</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f2f2f2;
-        }
-        h1, h2 {
+            padding: 30px;
+            background-color: #f9f9f9;
             color: #333;
         }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
         ul {
             list-style: none;
-            padding: 0;
+            padding-left: 0;
         }
+
         li {
             margin: 10px 0;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.1);
         }
+
         a {
-            color: #0066cc;
             text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
         }
+
         a:hover {
             text-decoration: underline;
         }
+
         form {
-            margin-top: 20px;
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+            max-width: 500px;
         }
+
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 15px;
+            font-weight: 600;
         }
+
         input, select, button {
             margin-top: 5px;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Available PDF Reports</h1>
+
+    <h1>📂 Available PDF Reports</h1>
+
     <ul>
         {% for report in reports %}
-            <li><a href="{{ url_for('main.download_report', filename=report) }}">{{ report }}</a></li>
+            <li>
+                {% if "network" in report %}
+                    🖥️ 
+                {% elif "web" in report %}
+                    🌐 
+                {% elif "phishing" in report %}
+                    🛡️ 
+                {% else %}
+                    📄 
+                {% endif %}
+                <a href="{{ url_for('main.download_report', filename=report) }}">{{ report }}</a>
+            </li>
         {% else %}
             <li>No reports found.</li>
         {% endfor %}
     </ul>
 
     <hr>
-    <h2>Generate a Report</h2>
+
+    <h2>🛠️ Generate New Report</h2>
     <form action="{{ url_for('main.generate_report') }}" method="post">
-        <label for="report_type">Type:</label>
+        <label for="report_type">Select Report Type:</label>
         <select name="report_type" id="report_type" required>
-            <option value="network">Network</option>
-            <option value="web">Web</option>
+            <option value="network">🖥️ Network Report</option>
+            <option value="web">🌐 Web Report</option>
         </select>
 
-        <label for="json_file">JSON Filename:</label>
+        <label for="json_file">Enter JSON Filename:</label>
         <input type="text" name="json_file" id="json_file" placeholder="e.g., network_scan_20250606_160222.json" required>
 
-        <button type="submit">Generate</button>
+        <button type="submit">📤 Generate Report</button>
     </form>
+
 </body>
 </html>
