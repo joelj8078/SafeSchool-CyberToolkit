@@ -9,7 +9,6 @@ from modules.phishing_module import generate_phishing_email
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from modules.report_phishing import generate_phishing_analysis_pdf
 
-
 main = Blueprint(
     "main",
     __name__,
@@ -67,19 +66,36 @@ def run_web_scan():
 # ---------------- REPORTS ----------------
 @main.route("/reports")
 def reports_dashboard():
-    reports = [f for f in os.listdir(REPORTS_DIR) if f.endswith(".pdf")]
-    reports.sort(reverse=True)
-    return render_template("reports.html", reports=reports)
+    report_dir = os.path.join("reports")
+    all_reports = os.listdir(report_dir)
+
+    network_reports = [r for r in all_reports if r.startswith("network_")]
+    web_reports = [r for r in all_reports if r.startswith("web_")]
+    phishing_reports = [r for r in all_reports if r.startswith("phishing_analysis_")]
+
+    return render_template(
+        "reports.html",
+        network_reports=network_reports,
+        web_reports=web_reports,
+        phishing_reports=phishing_reports
+    )
 
 @main.route("/generate_report", methods=["POST"])
 def generate_report():
     report_type = request.form.get("report_type")
     json_file = request.form.get("json_file")
 
-    if report_type == "network":
-        generate_network_report(os.path.join("data/network", json_file))
-    elif report_type == "web":
-        generate_web_report(os.path.join("data/web", json_file))
+    try:
+        if report_type == "network":
+            generate_network_report(os.path.join("data/network", json_file))
+        elif report_type == "web":
+            generate_web_report(os.path.join("data/web", json_file))
+        elif report_type == "phishing":
+            generate_phishing_analysis_pdf(
+                json_path=os.path.join("data/phishing", json_file)
+            )
+    except Exception as e:
+        log_feedback(f"[ERROR] Report generation failed for {report_type}: {str(e)}")
 
     return redirect(url_for("main.reports_dashboard"))
 
@@ -125,7 +141,6 @@ def analyze_email():
     else:
         lower_content = content.lower()
 
-        # --- Rule-based checks ---
         if "click here" in lower_content or "login" in lower_content:
             findings.append("Suspicious links or login prompts detected.")
         if "urgent" in lower_content or "immediately" in lower_content:
@@ -141,7 +156,6 @@ def analyze_email():
         if "http://" in lower_content and "https://" not in lower_content:
             findings.append("Insecure HTTP link detected.")
 
-        # --- Tone analysis with VADER ---
         try:
             analyzer = SentimentIntensityAnalyzer()
             scores = analyzer.polarity_scores(content)
@@ -156,11 +170,9 @@ def analyze_email():
             findings.append("Sentiment analysis failed.")
             log_feedback(f"[ERROR] VADER analysis failed: {str(e)}")
 
-    # Default if no indicators found
     if not findings:
         findings = ["No obvious phishing indicators found — but stay cautious."]
 
-    # Save report
     try:
         generate_phishing_analysis_pdf(content, findings)
     except Exception as e:
@@ -172,7 +184,7 @@ def analyze_email():
         email=None
     )
 
-
-
-
-
+# ---------------- CYBER HYGIENE ----------------
+@main.route("/cyber_hygiene")
+def cyber_hygiene():
+    return render_template("cyber_hygiene.html")

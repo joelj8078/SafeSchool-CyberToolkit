@@ -1,0 +1,71 @@
+{
+    "url": "https://hbh.sh/home",
+    "status_code": 200,
+    "headers": {
+        "Date": "Sat, 28 Jun 2025 16:16:28 GMT",
+        "Content-Type": "text/html; charset=UTF-8",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "Server": "cloudflare",
+        "Vary": "Accept-Encoding",
+        "Cache-Control": "no-cache, private",
+        "Access-Control-Allow-Origin": "https://*.hbh.sh",
+        "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=fXJYbPe5thO7nNGdKp7L5kZqLH0ythCEZZMz3VHKto8gRM74vTBlDDIpWjlGsrPbxGos9NkQ%2BcZ6KkOjFPOS2Y5pt28I3w%3D%3D\"}]}",
+        "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+        "Cf-Cache-Status": "DYNAMIC",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Encoding": "gzip",
+        "Set-Cookie": "XSRF-TOKEN=eyJpdiI6IndPQ0VDbFA3WEgwdTZtb3BiYVFWVnc9PSIsInZhbHVlIjoiZVJBR0FnZnFkNG9JckZJVDEvU1cyTzdLQzFvZUlvWHUxaDh5aXFUU3BoOWpVR0UrQU5mS0RQczd1Z2JIa3RFbUdHbjFJWnZIOExYR0dFK1hTVGRXcFlMb1ozemNFMHFidkd0UElUc3AwOFJpTDFqRU5MV0pTeHArVVM0UCtyR1oiLCJtYWMiOiIwZmYzZGNhZWZkNTY4ZTAyYjhkY2U5YmM5MDMyNjcxZDAxOGIwMWJlNzVkMDkyMTI1OGU5ZmE1MGEwMDU5ZjU3IiwidGFnIjoiIn0%3D; SameSite=Strict; Secure; Path=/; Domain=hbh.sh; Max-Age=43200; Expires=Sun, 29 Jun 2025 04:16:28 GMT, hbh_session=eyJpdiI6Im9YSVdaQmwxTVRidno3N2RIRWRMWmc9PSIsInZhbHVlIjoiaDdQcWVrZUtsWHd6dERsUVJGTEdnd2pEMGVvWXJlMEp5d3NndHJBRDRMS2p6T0dad0UwOGlUUXQxdEhwa0EzbXNIUDJNSk1jUzNPdG9CS0N1YjIzdnBwN1N4M0dKcTBTbkdlTzl5TUgxbUVKZGQvQUhkeTBFcnU3a3lYR2UvTVMiLCJtYWMiOiJiNjBmNmQ2Y2RhY2E0YzRhZjc5MDBjNTgyNjRmZmUyZWMzZTk3ZmJlMGZjNGZhZTVjN2VmN2QwZTRiODY2M2IwIiwidGFnIjoiIn0%3D; HttpOnly; SameSite=Strict; Secure; Path=/; Domain=hbh.sh; Max-Age=43200; Expires=Sun, 29 Jun 2025 04:16:28 GMT",
+        "CF-RAY": "956e7d1efcd17f70-MAA",
+        "alt-svc": "h3=\":443\"; ma=86400"
+    },
+    "technologies": [
+        "JavaScript",
+        "CSS Frameworks"
+    ],
+    "ssl_info": {
+        "issuer": {
+            "countryName": "US",
+            "organizationName": "Google Trust Services",
+            "commonName": "WE1"
+        },
+        "subject": {
+            "commonName": "hbh.sh"
+        },
+        "valid_from": "May  9 13:15:50 2025 GMT",
+        "valid_until": "Aug  7 14:13:14 2025 GMT",
+        "expires_in_days": 39
+    },
+    "security_headers": {
+        "present": [
+            "Strict-Transport-Security",
+            "X-Content-Type-Options"
+        ],
+        "missing": [
+            "Content-Security-Policy",
+            "X-Frame-Options",
+            "Referrer-Policy",
+            "Permissions-Policy"
+        ]
+    },
+    "sensitive_paths_found": [
+        "/login",
+        "/robots.txt",
+        "/sitemap.xml"
+    ],
+    "open_redirect_test": {
+        "vulnerable": false
+    },
+    "whois_info": {
+        "domain_name": "hbh.sh",
+        "registrar": "Cloudflare, Inc",
+        "creation_date": "2020-07-28 08:55:23",
+        "expiration_date": "2026-07-28 08:55:23"
+    },
+    "performance": {
+        "response_time_ms": 839.85,
+        "content_length_kb": 53.5
+    },
+    "security_score": 3
+}

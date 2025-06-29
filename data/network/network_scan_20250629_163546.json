@@ -1,0 +1,243 @@
+{
+    "system_info": {
+        "hostname": "Huawei",
+        "ip_address": "192.168.56.1",
+        "os": "Windows",
+        "os_version": "10.0.22631",
+        "architecture": "AMD64",
+        "cpu_cores": 4,
+        "cpu_threads": 8,
+        "cpu_usage_percent": 8.4,
+        "memory_total_gb": 6.94,
+        "memory_used_gb": 6.03,
+        "memory_usage_percent": 86.9,
+        "disks": [
+            {
+                "device": "C:\\",
+                "mountpoint": "C:\\",
+                "fstype": "NTFS",
+                "total_gb": 222.86,
+                "used_gb": 221.22,
+                "free_gb": 1.64,
+                "usage_percent": 99.3
+            },
+            {
+                "device": "D:\\",
+                "mountpoint": "D:\\",
+                "fstype": "NTFS",
+                "total_gb": 931.5,
+                "used_gb": 612.73,
+                "free_gb": 318.77,
+                "usage_percent": 65.8
+            }
+        ],
+        "network_interfaces": [
+            {
+                "interface": "Ethernet 2",
+                "is_up": true,
+                "speed_mbps": 1000,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "0A-00-27-00-00-0B",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "192.168.56.1",
+                        "netmask": "255.255.255.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::39ae:c456:1f4d:2c8e",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "Local Area Connection* 1",
+                "is_up": false,
+                "speed_mbps": 0,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "5C-BA-EF-79-12-87",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "169.254.96.212",
+                        "netmask": "255.255.0.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::4ccb:4496:be3:9bbb",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "Local Area Connection* 2",
+                "is_up": false,
+                "speed_mbps": 0,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "DE-BA-EF-79-12-87",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "169.254.24.82",
+                        "netmask": "255.255.0.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::e03c:a4fe:c956:cf8a",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "Wi-Fi",
+                "is_up": true,
+                "speed_mbps": 300,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "5C-BA-EF-79-12-87",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "192.168.1.8",
+                        "netmask": "255.255.255.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::f31:226c:d254:d36",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "Bluetooth Network Connection",
+                "is_up": false,
+                "speed_mbps": 3,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "5C-BA-EF-79-12-88",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "169.254.96.247",
+                        "netmask": "255.255.0.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::3a05:29b5:53ad:dd3a",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "vEthernet (WSL (Hyper-V firewall))",
+                "is_up": true,
+                "speed_mbps": 4294,
+                "addresses": [
+                    {
+                        "family": "-1",
+                        "address": "00-15-5D-D1-ED-00",
+                        "netmask": null,
+                        "broadcast": null
+                    },
+                    {
+                        "family": "2",
+                        "address": "172.31.240.1",
+                        "netmask": "255.255.240.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "fe80::c16e:413:4f12:d8e9",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            },
+            {
+                "interface": "Loopback Pseudo-Interface 1",
+                "is_up": true,
+                "speed_mbps": 1073,
+                "addresses": [
+                    {
+                        "family": "2",
+                        "address": "127.0.0.1",
+                        "netmask": "255.0.0.0",
+                        "broadcast": null
+                    },
+                    {
+                        "family": "23",
+                        "address": "::1",
+                        "netmask": null,
+                        "broadcast": null
+                    }
+                ]
+            }
+        ]
+    },
+    "router_scan": {
+        "ip": ".",
+        "open_ports": [],
+        "weak_services": []
+    },
+    "network_devices": [
+        {
+            "ip": "192.168.1.1",
+            "hostname": "",
+            "open_ports": [
+                21,
+                53,
+                80,
+                443
+            ],
+            "weak_services": [
+                [
+                    21,
+                    "ftp"
+                ]
+            ]
+        },
+        {
+            "ip": "192.168.1.8",
+            "hostname": "",
+            "open_ports": [
+                135,
+                139,
+                445,
+                5357,
+                5432,
+                7070,
+                8080
+            ],
+            "weak_services": []
+        }
+    ]
+}
