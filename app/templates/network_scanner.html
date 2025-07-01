@@ -1,107 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Network Scanner | SafeSchool Toolkit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Network Scanner | SafeSchool Toolkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-    <nav class="bg-blue-900 text-white shadow px-6 py-4">
-    <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">🖥️ Network Scanner</h1>
-        <a href="/" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-blue-100">
-        ← Back Home
-        </a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-primary shadow">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="h4 text-white mb-0">🖥️ Network Scanner</h1>
+      <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
     </div>
-    </nav>
+  </nav>
 
-    <main class="flex-grow container mx-auto px-4 py-6">
+  <!-- Main Content -->
+  <main class="container py-4 flex-grow-1">
+    <form action="/run_network_scan" method="POST" class="bg-white shadow-sm rounded p-4 mb-5">
+      <p class="text-muted mb-3">Click the button below to scan your system, router, and local network:</p>
+      <button type="submit" class="btn btn-primary fw-bold">Run Full Scan</button>
+    </form>
 
-        <form action="/run_network_scan" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-            <p class="text-gray-700 mb-2">Click the button below to scan your system, router, and local network:</p>
-            <button type="submit"
-                    class="bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded">
-                Run Full Scan
-            </button>
-        </form>
+    {% if results %}
+    
+    <!-- System Info -->
+    <section class="bg-white shadow-sm rounded p-4 mb-4">
+      <h2 class="h5 mb-3">🖥️ Local System Info</h2>
+      <div class="row row-cols-1 row-cols-md-2 g-3 text-muted small">
+        <div><strong>Hostname:</strong> {{ results.system_info.hostname }}</div>
+        <div><strong>IP Address:</strong> {{ results.system_info.ip_address }}</div>
+        <div><strong>OS:</strong> {{ results.system_info.os }} {{ results.system_info.os_version }}</div>
+        <div><strong>Architecture:</strong> {{ results.system_info.architecture }}</div>
+        <div><strong>CPU Cores:</strong> {{ results.system_info.cpu_cores }}</div>
+        <div><strong>CPU Threads:</strong> {{ results.system_info.cpu_threads }}</div>
+        <div><strong>CPU Usage:</strong> {{ results.system_info.cpu_usage_percent }}%</div>
+        <div><strong>Total RAM:</strong> {{ results.system_info.memory_total_gb }} GB</div>
+        <div><strong>Used RAM:</strong> {{ results.system_info.memory_used_gb }} GB ({{ results.system_info.memory_usage_percent }}%)</div>
+        <div><strong>Disk Usage:</strong> {{ results.system_info.disks[0].used_gb }}/{{ results.system_info.disks[0].total_gb }} GB ({{ results.system_info.disks[0].usage_percent }}%)</div>
+      </div>
 
-        {% if results %}
+      {% if results.system_info.disks|length > 1 %}
+      <div class="mt-3 small">
+        <h6 class="fw-semibold text-dark">Additional Disk Partitions:</h6>
+        <ul class="ps-3">
+          {% for disk in results.system_info.disks[1:] %}
+            <li>{{ disk.device }} ({{ disk.mountpoint }}) - {{ disk.used_gb }}/{{ disk.total_gb }} GB</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
 
-        <!-- System Info -->
-        <section class="bg-white shadow-md rounded p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">🖥️ Local System Info</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800">
-                <p><strong>Hostname:</strong> {{ results.system_info.hostname }}</p>
-                <p><strong>IP Address:</strong> {{ results.system_info.ip_address }}</p>
-                <p><strong>OS:</strong> {{ results.system_info.os }} {{ results.system_info.os_version }}</p>
-                <p><strong>Architecture:</strong> {{ results.system_info.architecture }}</p>
-                <p><strong>CPU Cores:</strong> {{ results.system_info.cpu_cores }}</p>
-                <p><strong>CPU Threads:</strong> {{ results.system_info.cpu_threads }}</p>
-                <p><strong>CPU Usage:</strong> {{ results.system_info.cpu_usage_percent }}%</p>
-                <p><strong>Total RAM:</strong> {{ results.system_info.memory_total_gb }} GB</p>
-                <p><strong>Used RAM:</strong> {{ results.system_info.memory_used_gb }} GB ({{ results.system_info.memory_usage_percent }}%)</p>
-                <p><strong>Disk Usage:</strong> {{ results.system_info.disks[0].used_gb }}/{{ results.system_info.disks[0].total_gb }} GB ({{ results.system_info.disks[0].usage_percent }}%)</p>
-            </div>
+      <div class="mt-4 small">
+        <h6 class="fw-semibold text-dark">Network Interfaces:</h6>
+        {% for iface in results.system_info.network_interfaces %}
+          <div class="mb-2">
+            <p class="mb-1"><strong>{{ iface.interface }}</strong> ({{ "UP" if iface.is_up else "DOWN" }}, {{ iface.speed_mbps }} Mbps)</p>
+            <ul class="ps-4 text-secondary">
+              {% for addr in iface.addresses %}
+                <li>{{ addr.family }}: {{ addr.address }} (Mask: {{ addr.netmask }})</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
 
-            {% if results.system_info.disks|length > 1 %}
-            <div class="mt-4 text-sm">
-                <h3 class="font-semibold text-gray-700 mb-2">Additional Disk Partitions:</h3>
-                <ul class="list-disc pl-5">
-                    {% for disk in results.system_info.disks[1:] %}
-                        <li>{{ disk.device }} ({{ disk.mountpoint }}) - {{ disk.used_gb }}/{{ disk.total_gb }} GB</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
+    <!-- Router Scan -->
+    <section class="bg-white shadow-sm rounded p-4 mb-4">
+      <h2 class="h5 mb-3">🔐 Router Scan Results</h2>
+      {% if results.router_scan %}
+        <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
+        <p><strong>Open Ports:</strong> {{ results.router_scan.open_ports }}</p>
+        <p><strong>Weak Services:</strong> {{ results.router_scan.weak_services }}</p>
+      {% else %}
+        <p class="text-danger">Router IP could not be detected.</p>
+      {% endif %}
+    </section>
 
-            <div class="mt-6 text-sm">
-                <h3 class="font-semibold text-gray-700 mb-2">Network Interfaces:</h3>
-                {% for iface in results.system_info.network_interfaces %}
-                    <div class="mb-2">
-                        <p><strong>{{ iface.interface }}</strong> ({{ "UP" if iface.is_up else "DOWN" }}, {{ iface.speed_mbps }} Mbps)</p>
-                        <ul class="list-disc pl-6 text-gray-600">
-                            {% for addr in iface.addresses %}
-                                <li>{{ addr.family }}: {{ addr.address }} (Mask: {{ addr.netmask }})</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
-            </div>
-        </section>
+    <!-- Network Devices -->
+    <section class="bg-white shadow-sm rounded p-4 mb-4">
+      <h2 class="h5 mb-3">📡 Network Devices</h2>
+      {% for device in results.network_devices %}
+        <div class="mb-4 border-bottom pb-3 small text-muted">
+          <p><strong>IP:</strong> {{ device.ip }}</p>
+          <p><strong>Hostname:</strong> {{ device.hostname }}</p>
+          <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
+          <p><strong>Weak Services:</strong> {{ device.weak_services }}</p>
+        </div>
+      {% endfor %}
+    </section>
 
-        <!-- Router Scan -->
-        <section class="bg-white shadow-md rounded p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">🔐 Router Scan Results</h2>
-            {% if results.router_scan %}
-                <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
-                <p><strong>Open Ports:</strong> {{ results.router_scan.open_ports }}</p>
-                <p><strong>Weak Services:</strong> {{ results.router_scan.weak_services }}</p>
-            {% else %}
-                <p class="text-red-600">Router IP could not be detected.</p>
-            {% endif %}
-        </section>
+    {% endif %}
+  </main>
 
-        <!-- Network Devices -->
-        <section class="bg-white shadow-md rounded p-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">📡 Network Devices</h2>
-            {% for device in results.network_devices %}
-                <div class="mb-4 border-b border-gray-200 pb-4">
-                    <p><strong>IP:</strong> {{ device.ip }}</p>
-                    <p><strong>Hostname:</strong> {{ device.hostname }}</p>
-                    <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
-                    <p><strong>Weak Services:</strong> {{ device.weak_services }}</p>
-                </div>
-            {% endfor %}
-        </section>
+  <!-- Footer -->
+  <footer class="bg-primary text-white text-center py-3 small">
+    &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
+  </footer>
 
-        {% endif %}
-    </main>
-
-    <footer class="bg-blue-900 text-white text-center py-3">
-        &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
-    </footer>
-
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

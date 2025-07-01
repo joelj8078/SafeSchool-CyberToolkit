@@ -1,100 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Phishing Awareness | SafeSchool Toolkit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Phishing Awareness | SafeSchool Toolkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen font-sans">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-    <nav class="bg-red-700 text-white p-4 shadow">
-    <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">🛡️ Phishing Awareness</h1>
-        <a href="/" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-blue-100">
-        ← Back Home
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-danger shadow">
+  <div class="container d-flex justify-content-between align-items-center py-3">
+    <h1 class="h4 text-white mb-0">🛡️ Phishing Awareness</h1>
+    <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
+  </div>
+</nav>
+
+<main class="container py-5 flex-grow-1">
+
+  <!-- Tips Section -->
+  <div class="bg-white rounded shadow-sm p-4 mb-5">
+    <h2 class="h5 fw-semibold text-dark mb-3">How to Spot Phishing Emails</h2>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">Double-check the sender's email domain</li>
+      <li class="list-group-item">Hover over links to see actual destination URLs</li>
+      <li class="list-group-item">Be wary of urgency, threats, or suspicious requests</li>
+      <li class="list-group-item">Never download unknown attachments</li>
+      <li class="list-group-item">When in doubt, confirm directly from official sources</li>
+    </ul>
+  </div>
+
+  <!-- Email Generator -->
+  <div class="bg-white rounded shadow-sm p-4 mb-5">
+    <h2 class="h5 fw-semibold text-dark mb-3">Simulated Phishing Email Generator</h2>
+    <form method="POST" action="/phishing_awareness">
+      <button type="submit" class="btn btn-danger fw-semibold">
+        Generate New Sample Email
+      </button>
+    </form>
+
+    {% if email %}
+    <div class="mt-4 border rounded border-secondary-subtle bg-light p-4">
+      <p><strong>Category:</strong> {{ email.category }}</p>
+      <p><strong>From:</strong> {{ email.from }}</p>
+      <p><strong>Subject:</strong> {{ email.subject }}</p>
+      <p><strong>Body:</strong></p>
+      <p class="ms-3 text-dark" style="white-space: pre-line;">{{ email.body }}</p>
+      <p><strong>Link:</strong> 
+        <a href="{{ email.link }}" class="text-primary text-decoration-underline" target="_blank">
+          {{ email.link }}
         </a>
+      </p>
+      <p class="text-muted small"><strong>Generated At:</strong> {{ email.generated_at }}</p>
     </div>
-    </nav>
+    {% endif %}
+  </div>
 
+  <!-- Email Analyzer -->
+  <div class="bg-white rounded shadow-sm p-4">
+    <h2 class="h5 fw-semibold text-dark mb-3">Analyze Suspicious Email</h2>
+    <form method="POST" action="/analyze_email">
+      <div class="mb-3">
+        <label for="email_content" class="form-label fw-semibold">Paste email content below:</label>
+        <textarea name="email_content" id="email_content" rows="6" required
+                  class="form-control" placeholder="Paste the full email message here..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary fw-semibold">
+        Analyze Email
+      </button>
+    </form>
 
-    <main class="container mx-auto px-4 py-8">
+    {% if analysis %}
+    <div class="mt-4 border border-primary-subtle bg-light p-4 rounded">
+      <h3 class="h6 text-primary fw-semibold mb-2">Analysis Result</h3>
+      <ul class="ms-3 text-dark">
+        {% for finding in analysis.findings %}
+          <li>{{ finding }}</li>
+        {% endfor %}
+      </ul>
+      <p class="mt-3 small text-muted">
+        A downloadable PDF report has been saved. You can download it from the 
+        <a href="{{ url_for('main.reports_dashboard') }}" class="text-decoration-underline text-primary">Reports section</a>.
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</main>
 
-        <!-- Tips Section -->
-        <div class="bg-white rounded shadow p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">How to Spot Phishing Emails</h2>
-            <ul class="list-disc pl-6 text-gray-700 space-y-2">
-                <li>Double-check the sender's email domain</li>
-                <li>Hover over links to see actual destination URLs</li>
-                <li>Be wary of urgency, threats, or suspicious requests</li>
-                <li>Never download unknown attachments</li>
-                <li>When in doubt, confirm directly from official sources</li>
-            </ul>
-        </div>
+<!-- Footer -->
+<footer class="bg-danger text-white text-center py-3 mt-5">
+  &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
+</footer>
 
-        <!-- Email Generator -->
-        <div class="bg-white rounded shadow p-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Simulated Phishing Email Generator</h2>
-            <form method="POST" action="/phishing_awareness">
-                <button type="submit" class="bg-red-600 hover:bg-red-800 text-white font-semibold px-6 py-2 rounded">
-                    Generate New Sample Email
-                </button>
-            </form>
-
-            {% if email %}
-            <div class="mt-6 bg-gray-50 border border-gray-300 rounded p-5 space-y-3">
-                <p><strong>Category:</strong> {{ email.category }}</p>
-                <p><strong>From:</strong> {{ email.from }}</p>
-                <p><strong>Subject:</strong> {{ email.subject }}</p>
-                <p><strong>Body:</strong></p>
-                <p class="pl-4 text-gray-700 whitespace-pre-line">{{ email.body }}</p>
-                <p><strong>Link:</strong> 
-                    <a href="{{ email.link }}" class="text-blue-600 underline" target="_blank">
-                        {{ email.link }}
-                    </a>
-                </p>
-                <p class="text-sm text-gray-500"><strong>Generated At:</strong> {{ email.generated_at }}</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Email Analyzer -->
-        <div class="bg-white rounded shadow p-6 mt-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-2">Analyze Suspicious Email</h2>
-            <form method="POST" action="/analyze_email">
-                <label for="email_content" class="block text-gray-700 font-medium mb-2">Paste email content below:</label>
-                <textarea name="email_content" id="email_content" rows="6"
-                        class="w-full border rounded px-3 py-2 text-gray-700 focus:outline-none focus:ring"
-                        placeholder="Paste the full email message here..." required></textarea>
-                <button type="submit"
-                        class="mt-4 bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
-                    Analyze Email
-                </button>
-            </form>
-
-            {% if analysis %}
-            <div class="mt-6 bg-gray-50 border border-blue-300 p-4 rounded">
-                <h3 class="text-lg font-semibold text-blue-700 mb-2">Analysis Result</h3>
-                <ul class="list-disc text-gray-800 ml-6">
-                    {% for finding in analysis.findings %}
-                        <li>{{ finding }}</li>
-                    {% endfor %}
-                </ul>
-                <p class="mt-4 text-sm text-gray-600">
-                    A downloadable PDF report has been saved. 
-                    You can download it from the 
-                    <a href="{{ url_for('main.reports_dashboard') }}" class="text-blue-600 underline">Reports section</a>.
-                </p>
-            </div>
-            {% endif %}
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-red-700 text-white text-center py-3">
-        &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
-    </footer>
-
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

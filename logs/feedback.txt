@@ -45,3 +45,7 @@ Message: Improve UI
 
 [2025-06-29 17:22:23] [ERROR] Report generation failed for phishing: generate_phishing_analysis_pdf() got an unexpected keyword argument 'json_path'
 
+[2025-07-01 17:12:17] [ERROR] PDF generation failed: 'latin-1' codec can't encode character '\u2019' in position 490: ordinal not in range(256)
+
+[2025-07-01 17:13:11] [ERROR] PDF generation failed: 'latin-1' codec can't encode character '\u2019' in position 408: ordinal not in range(256)
+

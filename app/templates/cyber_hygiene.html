@@ -1,95 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Cyber Hygiene | SafeSchool Toolkit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Cyber Hygiene | SafeSchool Toolkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .hidden { display: none; }
+  </style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-light text-dark d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-    <nav class="bg-blue-900 text-white p-4">
-    <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">🧼 Cyber Hygiene Tips</h1>
-        <a href="/" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-blue-100">
-        ← Back Home
-        </a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-primary shadow">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="h4 text-white mb-0">🧼 Cyber Hygiene Tips</h1>
+      <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
     </div>
-    </nav>
+  </nav>
 
+  <main class="container my-5 flex-grow-1">
 
-    <main class="max-w-5xl mx-auto py-10 px-4">
-        <!-- Toggle -->
-        <div class="text-center mb-8">
-            <span class="font-semibold">Choose your level:</span>
-            <button id="nontech-btn" onclick="showSection('nontech')" class="mx-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">
-                Non-Technical
-            </button>
-            <button id="tech-btn" onclick="showSection('tech')" class="mx-2 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300">
-                Technical
-            </button>
-        </div>
+    <!-- Toggle Buttons -->
+    <div class="text-center mb-4">
+      <span class="fw-semibold me-2">Choose your level:</span>
+      <button id="nontech-btn" onclick="showSection('nontech')" class="btn btn-primary me-2">
+        Non-Technical
+      </button>
+      <button id="tech-btn" onclick="showSection('tech')" class="btn btn-outline-secondary">
+        Technical
+      </button>
+    </div>
 
-        <!-- Non-Technical Section -->
-        <div id="nontech-section" class="space-y-6">
-            <h2 class="text-2xl font-bold">Cyber Hygiene Tips (Non-Technical)</h2>
-            <ul class="list-disc pl-6 space-y-2">
-                <li>Use strong, unique passwords for each account.</li>
-                <li>Enable two-factor authentication (2FA) wherever possible.</li>
-                <li>Be cautious of unsolicited emails and links.</li>
-                <li>Regularly update your apps and devices.</li>
-                <li>Install and update antivirus/anti-malware software.</li>
-                <li>Back up important data regularly to the cloud or external drive.</li>
-                <li>Do not share personal information on unknown websites or social media.</li>
-                <li>Use a secure, password-protected Wi-Fi connection.</li>
-            </ul>
-        </div>
+    <!-- Non-Technical Tips -->
+    <div id="nontech-section" class="mb-5">
+      <h2 class="h5 fw-bold mb-3">Cyber Hygiene Tips (Non-Technical)</h2>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Use strong, unique passwords for each account.</li>
+        <li class="list-group-item">Enable two-factor authentication (2FA) wherever possible.</li>
+        <li class="list-group-item">Be cautious of unsolicited emails and links.</li>
+        <li class="list-group-item">Regularly update your apps and devices.</li>
+        <li class="list-group-item">Install and update antivirus/anti-malware software.</li>
+        <li class="list-group-item">Back up important data regularly to the cloud or external drive.</li>
+        <li class="list-group-item">Do not share personal information on unknown websites or social media.</li>
+        <li class="list-group-item">Use a secure, password-protected Wi-Fi connection.</li>
+      </ul>
+    </div>
 
-        <!-- Technical Section -->
-        <div id="tech-section" class="space-y-6 hidden">
-            <h2 class="text-2xl font-bold">Cyber Hygiene Guidelines (Technical)</h2>
-            <ul class="list-disc pl-6 space-y-2">
-                <li>Apply OS and security patches promptly (use unattended-upgrades on Linux).</li>
-                <li>Enforce principle of least privilege for user and system permissions.</li>
-                <li>Implement secure coding practices to prevent OWASP Top 10 vulnerabilities.</li>
-                <li>Configure secure SSH settings (disable root login, enforce key-based auth).</li>
-                <li>Use centralized logging and SIEM for monitoring suspicious behavior.</li>
-                <li>Perform regular vulnerability scans and penetration testing.</li>
-                <li>Use firewalls, IDS/IPS and enforce network segmentation.</li>
-                <li>Encrypt sensitive data at rest and in transit (e.g., TLS, full-disk encryption).</li>
-            </ul>
-        </div>
-    </main>
+    <!-- Technical Tips -->
+    <div id="tech-section" class="hidden mb-5">
+      <h2 class="h5 fw-bold mb-3">Cyber Hygiene Guidelines (Technical)</h2>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Apply OS and security patches promptly (use unattended-upgrades on Linux).</li>
+        <li class="list-group-item">Enforce principle of least privilege for user and system permissions.</li>
+        <li class="list-group-item">Implement secure coding practices to prevent OWASP Top 10 vulnerabilities.</li>
+        <li class="list-group-item">Configure secure SSH settings (disable root login, enforce key-based auth).</li>
+        <li class="list-group-item">Use centralized logging and SIEM for monitoring suspicious behavior.</li>
+        <li class="list-group-item">Perform regular vulnerability scans and penetration testing.</li>
+        <li class="list-group-item">Use firewalls, IDS/IPS and enforce network segmentation.</li>
+        <li class="list-group-item">Encrypt sensitive data at rest and in transit (e.g., TLS, full-disk encryption).</li>
+      </ul>
+    </div>
 
-    <footer class="bg-blue-900 text-white text-sm text-center py-4">
-        &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
-    </footer>
+  </main>
 
-    <script>
-        function showSection(section) {
-            const techBtn = document.getElementById('tech-btn');
-            const nontechBtn = document.getElementById('nontech-btn');
-            const techSection = document.getElementById('tech-section');
-            const nontechSection = document.getElementById('nontech-section');
+  <!-- Footer -->
+  <footer class="bg-primary text-white text-center py-3">
+    &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
+  </footer>
 
-            if (section === 'nontech') {
-                nontechSection.classList.remove('hidden');
-                techSection.classList.add('hidden');
-                nontechBtn.classList.add('bg-blue-600', 'text-white');
-                nontechBtn.classList.remove('bg-gray-200', 'text-black');
-                techBtn.classList.remove('bg-blue-600', 'text-white');
-                techBtn.classList.add('bg-gray-200', 'text-black');
-            } else {
-                techSection.classList.remove('hidden');
-                nontechSection.classList.add('hidden');
-                techBtn.classList.add('bg-blue-600', 'text-white');
-                techBtn.classList.remove('bg-gray-200', 'text-black');
-                nontechBtn.classList.remove('bg-blue-600', 'text-white');
-                nontechBtn.classList.add('bg-gray-200', 'text-black');
-            }
-        }
-    </script>
+  <!-- Bootstrap JS & Custom Script -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showSection(section) {
+      const techBtn = document.getElementById('tech-btn');
+      const nontechBtn = document.getElementById('nontech-btn');
+      const techSection = document.getElementById('tech-section');
+      const nontechSection = document.getElementById('nontech-section');
+
+      if (section === 'nontech') {
+        nontechSection.classList.remove('hidden');
+        techSection.classList.add('hidden');
+        nontechBtn.classList.replace('btn-outline-secondary', 'btn-primary');
+        techBtn.classList.replace('btn-primary', 'btn-outline-secondary');
+      } else {
+        techSection.classList.remove('hidden');
+        nontechSection.classList.add('hidden');
+        techBtn.classList.replace('btn-outline-secondary', 'btn-primary');
+        nontechBtn.classList.replace('btn-primary', 'btn-outline-secondary');
+      }
+    }
+  </script>
 
 </body>
 </html>

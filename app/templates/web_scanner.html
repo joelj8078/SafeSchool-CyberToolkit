@@ -1,183 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Web Scanner | SafeSchool Toolkit</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Web Scanner | SafeSchool Toolkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-    <nav class="bg-green-900 text-white p-4 shadow">
-    <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">🌐 Web Scanner</h1>
-        <a href="/" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-blue-100">
-        ← Back Home
-        </a>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-success shadow">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+      <h1 class="h4 text-white mb-0">🌐 Web Scanner</h1>
+      <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
     </div>
-    </nav>
+  </nav>
 
+  <!-- Main Content -->
+  <main class="container py-4 flex-grow-1">
 
-    <main class="flex-grow container mx-auto px-4 py-6">
-        <form action="/run_web_scan" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-6">
-            <label for="url" class="block text-gray-700 font-bold mb-2">Enter Website URL:</label>
-            <input type="text" name="url" id="url" required
-                   class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-                   placeholder="https://example.com">
-            <button type="submit"
-                    class="mt-4 bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded">
-                Start Web Scan
-            </button>
-        </form>
+    <!-- URL Input Form -->
+    <form action="/run_web_scan" method="POST" class="bg-white shadow-sm rounded p-4 mb-4">
+      <div class="mb-3">
+        <label for="url" class="form-label fw-bold">Enter Website URL:</label>
+        <input type="text" class="form-control" name="url" id="url" required placeholder="https://example.com">
+      </div>
+      <button type="submit" class="btn btn-success fw-bold">Start Web Scan</button>
+    </form>
 
-        {% if error %}
-        <div class="bg-red-100 text-red-700 border border-red-300 p-4 rounded mb-6">
-            ⚠️ {{ error }}
-        </div>
-        {% endif %}
+    {% if error %}
+    <div class="alert alert-danger">
+      ⚠️ {{ error }}
+    </div>
+    {% endif %}
 
-        {% if results %}
-        <div class="bg-white shadow-md rounded p-6 mt-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">🔍 Scan Results for {{ results.url }}</h2>
+    {% if results %}
+    <div class="bg-white shadow-sm rounded p-4">
+      <h2 class="h5 mb-4">🔍 Scan Results for {{ results.url }}</h2>
 
-            <!-- Security Score -->
-            <div class="mb-6">
-                <h3 class="text-lg font-bold text-gray-700 mb-2">🔐 Security Score</h3>
-                {% set score = results.security_score %}
-                {% if score >= 8 %}
-                    <p class="text-xl font-bold text-green-700">{{ score }} / 10 (Excellent)</p>
-                {% elif score >= 5 %}
-                    <p class="text-xl font-bold text-yellow-600">{{ score }} / 10 (Moderate)</p>
-                {% else %}
-                    <p class="text-xl font-bold text-red-600">{{ score }} / 10 (Weak)</p>
-                {% endif %}
-            </div>
-
-        {% if results.radar_chart %}
-            <div class="mb-6">
-                <h3 class="text-lg font-bold text-gray-700 mb-2">📊 Security Radar Chart</h3>
-                <p class="text-sm text-gray-500">📁 Chart File: {{ results.radar_chart }}</p>
-                <img src="{{ url_for('static', filename='images/' ~ results.radar_chart) }}"
-                    alt="Radar Chart"
-                    class="w-full md:w-1/2 mx-auto border rounded shadow">
-            </div>
+      <!-- Security Score -->
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">🔐 Security Score</h5>
+        {% set score = results.security_score %}
+        {% if score >= 8 %}
+          <p class="fs-5 fw-bold text-success">{{ score }} / 10 (Excellent)</p>
+        {% elif score >= 5 %}
+          <p class="fs-5 fw-bold text-warning">{{ score }} / 10 (Moderate)</p>
         {% else %}
-            <div class="mb-6 text-red-600 font-semibold">
-                ⚠️ Radar chart not generated.
-            </div>
+          <p class="fs-5 fw-bold text-danger">{{ score }} / 10 (Weak)</p>
         {% endif %}
+      </div>
 
+      <!-- Radar Chart -->
+      {% if results.radar_chart %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">📊 Security Radar Chart</h5>
+        <p class="text-muted small">📁 Chart File: {{ results.radar_chart }}</p>
+        <img src="{{ url_for('static', filename='images/' ~ results.radar_chart) }}"
+             alt="Radar Chart"
+             class="img-fluid border rounded shadow-sm d-block mx-auto w-50">
+      </div>
+      {% else %}
+      <div class="mb-4 text-danger fw-semibold">
+        ⚠️ Radar chart not generated.
+      </div>
+      {% endif %}
 
-            <!-- SSL Certificate -->
-            {% if results.ssl_info %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">🔒 SSL Certificate</h3>
-                {% if results.ssl_info.error %}
-                    <p class="text-red-600">❌ {{ results.ssl_info.error }}</p>
-                {% else %}
-                    <p><strong>Issuer:</strong> {{ results.ssl_info.issuer }}</p>
-                    <p><strong>Subject:</strong> {{ results.ssl_info.subject }}</p>
-                    <p><strong>Valid From:</strong> {{ results.ssl_info.valid_from }}</p>
-                    <p><strong>Valid Until:</strong> {{ results.ssl_info.valid_until }}</p>
-                    <p><strong>Expires In:</strong> {{ results.ssl_info.expires_in_days }} days</p>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <!-- Response Headers -->
-            {% if results.headers %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">📑 Response Headers</h3>
-                <ul class="text-sm text-gray-700 list-disc ml-6">
-                    {% for key, value in results.headers.items() %}
-                        <li><strong>{{ key }}:</strong> {{ value }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <!-- Security Headers -->
-            {% if results.security_headers %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">🛡️ Security Headers</h3>
-                <p class="text-green-700 font-semibold">✅ Present Headers:</p>
-                <ul class="list-disc text-sm text-green-700 ml-6 mb-2">
-                    {% for header in results.security_headers.present %}
-                        <li>{{ header }}</li>
-                    {% endfor %}
-                </ul>
-                <p class="text-red-700 font-semibold">⚠️ Missing Headers:</p>
-                <ul class="list-disc text-sm text-red-700 ml-6">
-                    {% for header in results.security_headers.missing %}
-                        <li>{{ header }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <!-- Technologies -->
-            {% if results.technologies %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">💡 Detected Technologies</h3>
-                <ul class="list-disc text-sm text-gray-800 ml-6">
-                    {% for tech in results.technologies %}
-                        <li>{{ tech }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <!-- Sensitive Paths -->
-            {% if results.sensitive_paths_found %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">📁 Sensitive Paths Found</h3>
-                <ul class="list-disc text-sm text-red-700 ml-6">
-                    {% for path in results.sensitive_paths_found %}
-                        <li>{{ path }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <!-- Open Redirect -->
-            {% if results.open_redirect_test %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">🔄 Open Redirect Test</h3>
-                {% if results.open_redirect_test.vulnerable %}
-                    <p class="text-red-700">⚠️ Vulnerable to open redirect at: <strong>{{ results.open_redirect_test.location }}</strong></p>
-                {% else %}
-                    <p class="text-green-700">✅ No open redirect vulnerability detected.</p>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <!-- WHOIS Info -->
-            {% if results.whois_info %}
-            <div class="mb-6">
-                <h3 class="font-bold text-gray-700 mb-2">📋 WHOIS Information</h3>
-                {% if results.whois_info.error %}
-                    <p class="text-red-600">❌ {{ results.whois_info.error }}</p>
-                {% else %}
-                    <p><strong>Domain Name:</strong> {{ results.whois_info.domain_name }}</p>
-                    <p><strong>Registrar:</strong> {{ results.whois_info.registrar }}</p>
-                    <p><strong>Created On:</strong> {{ results.whois_info.creation_date }}</p>
-                    <p><strong>Expires On:</strong> {{ results.whois_info.expiration_date }}</p>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <!-- Performance -->
-            <div class="mb-4">
-                <h3 class="font-bold text-gray-700 mb-2">⚙️ Performance</h3>
-                <p><strong>Response Time:</strong> {{ results.performance.response_time_ms }} ms</p>
-                <p><strong>Content Size:</strong> {{ results.performance.content_length_kb }} KB</p>
-            </div>
-        </div>
+      <!-- SSL Certificate -->
+      {% if results.ssl_info %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">🔒 SSL Certificate</h5>
+        {% if results.ssl_info.error %}
+          <p class="text-danger">❌ {{ results.ssl_info.error }}</p>
+        {% else %}
+          <p><strong>Issuer:</strong> {{ results.ssl_info.issuer }}</p>
+          <p><strong>Subject:</strong> {{ results.ssl_info.subject }}</p>
+          <p><strong>Valid From:</strong> {{ results.ssl_info.valid_from }}</p>
+          <p><strong>Valid Until:</strong> {{ results.ssl_info.valid_until }}</p>
+          <p><strong>Expires In:</strong> {{ results.ssl_info.expires_in_days }} days</p>
         {% endif %}
-    </main>
+      </div>
+      {% endif %}
 
-    <footer class="bg-green-900 text-white text-center py-3">
-        &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
-    </footer>
+      <!-- Response Headers -->
+      {% if results.headers %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">📑 Response Headers</h5>
+        <ul class="small text-muted ps-3">
+          {% for key, value in results.headers.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Security Headers -->
+      {% if results.security_headers %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">🛡️ Security Headers</h5>
+        <p class="fw-semibold text-success">✅ Present Headers:</p>
+        <ul class="text-success small ps-3 mb-2">
+          {% for header in results.security_headers.present %}
+            <li>{{ header }}</li>
+          {% endfor %}
+        </ul>
+        <p class="fw-semibold text-danger">⚠️ Missing Headers:</p>
+        <ul class="text-danger small ps-3">
+          {% for header in results.security_headers.missing %}
+            <li>{{ header }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Technologies -->
+      {% if results.technologies %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">💡 Detected Technologies</h5>
+        <ul class="small text-muted ps-3">
+          {% for tech in results.technologies %}
+            <li>{{ tech }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Sensitive Paths -->
+      {% if results.sensitive_paths_found %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">📁 Sensitive Paths Found</h5>
+        <ul class="small text-danger ps-3">
+          {% for path in results.sensitive_paths_found %}
+            <li>{{ path }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Open Redirect -->
+      {% if results.open_redirect_test %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">🔄 Open Redirect Test</h5>
+        {% if results.open_redirect_test.vulnerable %}
+          <p class="text-danger">⚠️ Vulnerable to open redirect at: <strong>{{ results.open_redirect_test.location }}</strong></p>
+        {% else %}
+          <p class="text-success">✅ No open redirect vulnerability detected.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- WHOIS Info -->
+      {% if results.whois_info %}
+      <div class="mb-4">
+        <h5 class="fw-bold mb-2">📋 WHOIS Information</h5>
+        {% if results.whois_info.error %}
+          <p class="text-danger">❌ {{ results.whois_info.error }}</p>
+        {% else %}
+          <p><strong>Domain Name:</strong> {{ results.whois_info.domain_name }}</p>
+          <p><strong>Registrar:</strong> {{ results.whois_info.registrar }}</p>
+          <p><strong>Created On:</strong> {{ results.whois_info.creation_date }}</p>
+          <p><strong>Expires On:</strong> {{ results.whois_info.expiration_date }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Performance -->
+      <div class="mb-2">
+        <h5 class="fw-bold mb-2">⚙️ Performance</h5>
+        <p><strong>Response Time:</strong> {{ results.performance.response_time_ms }} ms</p>
+        <p><strong>Content Size:</strong> {{ results.performance.content_length_kb }} KB</p>
+      </div>
+
+    </div>
+    {% endif %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-success text-white text-center py-3 small">
+    &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
