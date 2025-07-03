@@ -49,3 +49,11 @@ Message: Improve UI
 
 [2025-07-01 17:13:11] [ERROR] PDF generation failed: 'latin-1' codec can't encode character '\u2019' in position 408: ordinal not in range(256)
 
+[2025-07-03 21:43:09] [ERROR] Report generation failed for web: [Errno 2] No such file or directory: 'data/web\\web_scan_20250703_213124.pdf'
+
+[2025-07-03 21:47:09] [FEEDBACK] From: Varun (varun123@gmail.com)
+Message: Bugs found in the Reports download section
+
+[2025-07-03 21:47:48] [FEEDBACK] From: Varun (varun123@gmail.com)
+Message: Bugs found in the Reports download section
+

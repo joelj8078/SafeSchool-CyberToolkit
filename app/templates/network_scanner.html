@@ -25,74 +25,105 @@
     </form>
 
     {% if results %}
-    
-    <!-- System Info -->
-    <section class="bg-white shadow-sm rounded p-4 mb-4">
-      <h2 class="h5 mb-3">🖥️ Local System Info</h2>
-      <div class="row row-cols-1 row-cols-md-2 g-3 text-muted small">
-        <div><strong>Hostname:</strong> {{ results.system_info.hostname }}</div>
-        <div><strong>IP Address:</strong> {{ results.system_info.ip_address }}</div>
-        <div><strong>OS:</strong> {{ results.system_info.os }} {{ results.system_info.os_version }}</div>
-        <div><strong>Architecture:</strong> {{ results.system_info.architecture }}</div>
-        <div><strong>CPU Cores:</strong> {{ results.system_info.cpu_cores }}</div>
-        <div><strong>CPU Threads:</strong> {{ results.system_info.cpu_threads }}</div>
-        <div><strong>CPU Usage:</strong> {{ results.system_info.cpu_usage_percent }}%</div>
-        <div><strong>Total RAM:</strong> {{ results.system_info.memory_total_gb }} GB</div>
-        <div><strong>Used RAM:</strong> {{ results.system_info.memory_used_gb }} GB ({{ results.system_info.memory_usage_percent }}%)</div>
-        <div><strong>Disk Usage:</strong> {{ results.system_info.disks[0].used_gb }}/{{ results.system_info.disks[0].total_gb }} GB ({{ results.system_info.disks[0].usage_percent }}%)</div>
-      </div>
+    <div class="bg-white shadow-sm rounded p-4">
+      <h2 class="h5 mb-4">📡 Scan Results</h2>
 
-      {% if results.system_info.disks|length > 1 %}
-      <div class="mt-3 small">
-        <h6 class="fw-semibold text-dark">Additional Disk Partitions:</h6>
-        <ul class="ps-3">
-          {% for disk in results.system_info.disks[1:] %}
-            <li>{{ disk.device }} ({{ disk.mountpoint }}) - {{ disk.used_gb }}/{{ disk.total_gb }} GB</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
+      <div class="accordion" id="networkAccordion">
 
-      <div class="mt-4 small">
-        <h6 class="fw-semibold text-dark">Network Interfaces:</h6>
-        {% for iface in results.system_info.network_interfaces %}
-          <div class="mb-2">
-            <p class="mb-1"><strong>{{ iface.interface }}</strong> ({{ "UP" if iface.is_up else "DOWN" }}, {{ iface.speed_mbps }} Mbps)</p>
-            <ul class="ps-4 text-secondary">
-              {% for addr in iface.addresses %}
-                <li>{{ addr.family }}: {{ addr.address }} (Mask: {{ addr.netmask }})</li>
-              {% endfor %}
-            </ul>
+        <!-- System Info -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingSystem">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSystem">
+              🖥️ Local System Info
+            </button>
+          </h2>
+          <div id="collapseSystem" class="accordion-collapse collapse show" data-bs-parent="#networkAccordion">
+            <div class="accordion-body small text-muted">
+              <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div><strong>Hostname:</strong> {{ results.system_info.hostname }}</div>
+                <div><strong>IP Address:</strong> {{ results.system_info.ip_address }}</div>
+                <div><strong>OS:</strong> {{ results.system_info.os }} {{ results.system_info.os_version }}</div>
+                <div><strong>Architecture:</strong> {{ results.system_info.architecture }}</div>
+                <div><strong>CPU Cores:</strong> {{ results.system_info.cpu_cores }}</div>
+                <div><strong>CPU Threads:</strong> {{ results.system_info.cpu_threads }}</div>
+                <div><strong>CPU Usage:</strong> {{ results.system_info.cpu_usage_percent }}%</div>
+                <div><strong>Total RAM:</strong> {{ results.system_info.memory_total_gb }} GB</div>
+                <div><strong>Used RAM:</strong> {{ results.system_info.memory_used_gb }} GB ({{ results.system_info.memory_usage_percent }}%)</div>
+                <div><strong>Disk Usage:</strong> {{ results.system_info.disks[0].used_gb }}/{{ results.system_info.disks[0].total_gb }} GB ({{ results.system_info.disks[0].usage_percent }}%)</div>
+              </div>
+
+              {% if results.system_info.disks|length > 1 %}
+              <div class="mt-3">
+                <h6 class="fw-semibold text-dark">Additional Disk Partitions:</h6>
+                <ul class="ps-3">
+                  {% for disk in results.system_info.disks[1:] %}
+                    <li>{{ disk.device }} ({{ disk.mountpoint }}) - {{ disk.used_gb }}/{{ disk.total_gb }} GB</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+
+              <div class="mt-4">
+                <h6 class="fw-semibold text-dark">Network Interfaces:</h6>
+                {% for iface in results.system_info.network_interfaces %}
+                  <div class="mb-2">
+                    <p class="mb-1"><strong>{{ iface.interface }}</strong> ({{ "UP" if iface.is_up else "DOWN" }}, {{ iface.speed_mbps }} Mbps)</p>
+                    <ul class="ps-4 text-secondary">
+                      {% for addr in iface.addresses %}
+                        <li>{{ addr.family }}: {{ addr.address }} (Mask: {{ addr.netmask }})</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
           </div>
-        {% endfor %}
-      </div>
-    </section>
-
-    <!-- Router Scan -->
-    <section class="bg-white shadow-sm rounded p-4 mb-4">
-      <h2 class="h5 mb-3">🔐 Router Scan Results</h2>
-      {% if results.router_scan %}
-        <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
-        <p><strong>Open Ports:</strong> {{ results.router_scan.open_ports }}</p>
-        <p><strong>Weak Services:</strong> {{ results.router_scan.weak_services }}</p>
-      {% else %}
-        <p class="text-danger">Router IP could not be detected.</p>
-      {% endif %}
-    </section>
-
-    <!-- Network Devices -->
-    <section class="bg-white shadow-sm rounded p-4 mb-4">
-      <h2 class="h5 mb-3">📡 Network Devices</h2>
-      {% for device in results.network_devices %}
-        <div class="mb-4 border-bottom pb-3 small text-muted">
-          <p><strong>IP:</strong> {{ device.ip }}</p>
-          <p><strong>Hostname:</strong> {{ device.hostname }}</p>
-          <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
-          <p><strong>Weak Services:</strong> {{ device.weak_services }}</p>
         </div>
-      {% endfor %}
-    </section>
 
+        <!-- Router Scan -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingRouter">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRouter">
+              🔐 Router Scan Results
+            </button>
+          </h2>
+          <div id="collapseRouter" class="accordion-collapse collapse" data-bs-parent="#networkAccordion">
+            <div class="accordion-body small">
+              {% if results.router_scan %}
+                <p><strong>IP:</strong> {{ results.router_scan.ip }}</p>
+                <p><strong>Open Ports:</strong> {{ results.router_scan.open_ports }}</p>
+                <p><strong>Weak Services:</strong> {{ results.router_scan.weak_services }}</p>
+              {% else %}
+                <p class="text-danger">Router IP could not be detected.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Network Devices -->
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingDevices">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDevices">
+              📶 Devices on Local Network
+            </button>
+          </h2>
+          <div id="collapseDevices" class="accordion-collapse collapse" data-bs-parent="#networkAccordion">
+            <div class="accordion-body small text-muted">
+              {% for device in results.network_devices %}
+                <div class="mb-4 border-bottom pb-3">
+                  <p><strong>IP:</strong> {{ device.ip }}</p>
+                  <p><strong>Hostname:</strong> {{ device.hostname }}</p>
+                  <p><strong>Open Ports:</strong> {{ device.open_ports }}</p>
+                  <p><strong>Weak Services:</strong> {{ device.weak_services }}</p>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- End accordion -->
+
+    </div>
     {% endif %}
   </main>
 

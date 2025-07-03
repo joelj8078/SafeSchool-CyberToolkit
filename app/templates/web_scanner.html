@@ -9,179 +9,258 @@
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark bg-success shadow">
-    <div class="container d-flex justify-content-between align-items-center py-3">
-      <h1 class="h4 text-white mb-0">🌐 Web Scanner</h1>
-      <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-success shadow">
+  <div class="container d-flex justify-content-between align-items-center py-3">
+    <h1 class="h4 text-white mb-0">🌐 Web Scanner</h1>
+    <a href="/" class="btn btn-light fw-semibold">← Back Home</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container py-4 flex-grow-1">
+
+  <!-- URL Input Form -->
+  <form action="/run_web_scan" method="POST" class="bg-white shadow-sm rounded p-4 mb-4">
+    <div class="mb-3">
+      <label for="url" class="form-label fw-bold">Enter Website URL:</label>
+      <input type="text" class="form-control" name="url" id="url" required placeholder="https://example.com">
     </div>
-  </nav>
+    <button type="submit" class="btn btn-success fw-bold">Start Web Scan</button>
+  </form>
 
-  <!-- Main Content -->
-  <main class="container py-4 flex-grow-1">
+  {% if error %}
+  <div class="alert alert-danger">⚠️ {{ error }}</div>
+  {% endif %}
 
-    <!-- URL Input Form -->
-    <form action="/run_web_scan" method="POST" class="bg-white shadow-sm rounded p-4 mb-4">
-      <div class="mb-3">
-        <label for="url" class="form-label fw-bold">Enter Website URL:</label>
-        <input type="text" class="form-control" name="url" id="url" required placeholder="https://example.com">
-      </div>
-      <button type="submit" class="btn btn-success fw-bold">Start Web Scan</button>
-    </form>
+  {% if results %}
+  <div class="bg-white shadow-sm rounded p-4">
+    <h2 class="h5 mb-4">🔍 Scan Results for {{ results.url }}</h2>
 
-    {% if error %}
-    <div class="alert alert-danger">
-      ⚠️ {{ error }}
-    </div>
-    {% endif %}
-
-    {% if results %}
-    <div class="bg-white shadow-sm rounded p-4">
-      <h2 class="h5 mb-4">🔍 Scan Results for {{ results.url }}</h2>
+    <div class="accordion" id="scanAccordion">
 
       <!-- Security Score -->
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">🔐 Security Score</h5>
-        {% set score = results.security_score %}
-        {% if score >= 8 %}
-          <p class="fs-5 fw-bold text-success">{{ score }} / 10 (Excellent)</p>
-        {% elif score >= 5 %}
-          <p class="fs-5 fw-bold text-warning">{{ score }} / 10 (Moderate)</p>
-        {% else %}
-          <p class="fs-5 fw-bold text-danger">{{ score }} / 10 (Weak)</p>
-        {% endif %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingScore">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseScore">
+            🔐 Security Score
+          </button>
+        </h2>
+        <div id="collapseScore" class="accordion-collapse collapse show" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            {% set score = results.security_score %}
+            {% if score >= 8 %}
+              <p class="fs-5 fw-bold text-success">{{ score }} / 10 (Excellent)</p>
+            {% elif score >= 5 %}
+              <p class="fs-5 fw-bold text-warning">{{ score }} / 10 (Moderate)</p>
+            {% else %}
+              <p class="fs-5 fw-bold text-danger">{{ score }} / 10 (Weak)</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
 
       <!-- Radar Chart -->
-      {% if results.radar_chart %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">📊 Security Radar Chart</h5>
-        <p class="text-muted small">📁 Chart File: {{ results.radar_chart }}</p>
-        <img src="{{ url_for('static', filename='images/' ~ results.radar_chart) }}"
-             alt="Radar Chart"
-             class="img-fluid border rounded shadow-sm d-block mx-auto w-50">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingRadar">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRadar">
+            📊 Security Radar Chart
+          </button>
+        </h2>
+        <div id="collapseRadar" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            {% if results.radar_chart %}
+              <p class="text-muted small">📁 Chart File: {{ results.radar_chart }}</p>
+              <img src="{{ url_for('static', filename='images/' ~ results.radar_chart) }}"
+                   alt="Radar Chart"
+                   class="img-fluid border rounded shadow-sm d-block mx-auto w-50">
+            {% else %}
+              <p class="text-danger fw-semibold">⚠️ Radar chart not generated.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      {% else %}
-      <div class="mb-4 text-danger fw-semibold">
-        ⚠️ Radar chart not generated.
-      </div>
-      {% endif %}
 
       <!-- SSL Certificate -->
       {% if results.ssl_info %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">🔒 SSL Certificate</h5>
-        {% if results.ssl_info.error %}
-          <p class="text-danger">❌ {{ results.ssl_info.error }}</p>
-        {% else %}
-          <p><strong>Issuer:</strong> {{ results.ssl_info.issuer }}</p>
-          <p><strong>Subject:</strong> {{ results.ssl_info.subject }}</p>
-          <p><strong>Valid From:</strong> {{ results.ssl_info.valid_from }}</p>
-          <p><strong>Valid Until:</strong> {{ results.ssl_info.valid_until }}</p>
-          <p><strong>Expires In:</strong> {{ results.ssl_info.expires_in_days }} days</p>
-        {% endif %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSSL">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSSL">
+            🔒 SSL Certificate
+          </button>
+        </h2>
+        <div id="collapseSSL" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            {% if results.ssl_info.error %}
+              <p class="text-danger">❌ {{ results.ssl_info.error }}</p>
+            {% else %}
+              <p><strong>Issuer:</strong> {{ results.ssl_info.issuer }}</p>
+              <p><strong>Subject:</strong> {{ results.ssl_info.subject }}</p>
+              <p><strong>Valid From:</strong> {{ results.ssl_info.valid_from }}</p>
+              <p><strong>Valid Until:</strong> {{ results.ssl_info.valid_until }}</p>
+              <p><strong>Expires In:</strong> {{ results.ssl_info.expires_in_days }} days</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Response Headers -->
       {% if results.headers %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">📑 Response Headers</h5>
-        <ul class="small text-muted ps-3">
-          {% for key, value in results.headers.items() %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
-          {% endfor %}
-        </ul>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingHeaders">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHeaders">
+            📑 Response Headers
+          </button>
+        </h2>
+        <div id="collapseHeaders" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            <ul class="small text-muted ps-3">
+              {% for key, value in results.headers.items() %}
+                <li><strong>{{ key }}:</strong> {{ value }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Security Headers -->
       {% if results.security_headers %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">🛡️ Security Headers</h5>
-        <p class="fw-semibold text-success">✅ Present Headers:</p>
-        <ul class="text-success small ps-3 mb-2">
-          {% for header in results.security_headers.present %}
-            <li>{{ header }}</li>
-          {% endfor %}
-        </ul>
-        <p class="fw-semibold text-danger">⚠️ Missing Headers:</p>
-        <ul class="text-danger small ps-3">
-          {% for header in results.security_headers.missing %}
-            <li>{{ header }}</li>
-          {% endfor %}
-        </ul>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSecHeaders">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSecHeaders">
+            🛡️ Security Headers
+          </button>
+        </h2>
+        <div id="collapseSecHeaders" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            <p class="fw-semibold text-success">✅ Present Headers:</p>
+            <ul class="text-success small ps-3 mb-2">
+              {% for header in results.security_headers.present %}
+                <li>{{ header }}</li>
+              {% endfor %}
+            </ul>
+            <p class="fw-semibold text-danger">⚠️ Missing Headers:</p>
+            <ul class="text-danger small ps-3">
+              {% for header in results.security_headers.missing %}
+                <li>{{ header }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Technologies -->
       {% if results.technologies %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">💡 Detected Technologies</h5>
-        <ul class="small text-muted ps-3">
-          {% for tech in results.technologies %}
-            <li>{{ tech }}</li>
-          {% endfor %}
-        </ul>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTech">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTech">
+            💡 Detected Technologies
+          </button>
+        </h2>
+        <div id="collapseTech" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            <ul class="small text-muted ps-3">
+              {% for tech in results.technologies %}
+                <li>{{ tech }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Sensitive Paths -->
       {% if results.sensitive_paths_found %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">📁 Sensitive Paths Found</h5>
-        <ul class="small text-danger ps-3">
-          {% for path in results.sensitive_paths_found %}
-            <li>{{ path }}</li>
-          {% endfor %}
-        </ul>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingSensitive">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSensitive">
+            📁 Sensitive Paths Found
+          </button>
+        </h2>
+        <div id="collapseSensitive" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            <ul class="small text-danger ps-3">
+              {% for path in results.sensitive_paths_found %}
+                <li>{{ path }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Open Redirect -->
       {% if results.open_redirect_test %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">🔄 Open Redirect Test</h5>
-        {% if results.open_redirect_test.vulnerable %}
-          <p class="text-danger">⚠️ Vulnerable to open redirect at: <strong>{{ results.open_redirect_test.location }}</strong></p>
-        {% else %}
-          <p class="text-success">✅ No open redirect vulnerability detected.</p>
-        {% endif %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingRedirect">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRedirect">
+            🔄 Open Redirect Test
+          </button>
+        </h2>
+        <div id="collapseRedirect" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            {% if results.open_redirect_test.vulnerable %}
+              <p class="text-danger">⚠️ Vulnerable to open redirect at: <strong>{{ results.open_redirect_test.location }}</strong></p>
+            {% else %}
+              <p class="text-success">✅ No open redirect vulnerability detected.</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- WHOIS Info -->
       {% if results.whois_info %}
-      <div class="mb-4">
-        <h5 class="fw-bold mb-2">📋 WHOIS Information</h5>
-        {% if results.whois_info.error %}
-          <p class="text-danger">❌ {{ results.whois_info.error }}</p>
-        {% else %}
-          <p><strong>Domain Name:</strong> {{ results.whois_info.domain_name }}</p>
-          <p><strong>Registrar:</strong> {{ results.whois_info.registrar }}</p>
-          <p><strong>Created On:</strong> {{ results.whois_info.creation_date }}</p>
-          <p><strong>Expires On:</strong> {{ results.whois_info.expiration_date }}</p>
-        {% endif %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingWhois">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWhois">
+            📋 WHOIS Information
+          </button>
+        </h2>
+        <div id="collapseWhois" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            {% if results.whois_info.error %}
+              <p class="text-danger">❌ {{ results.whois_info.error }}</p>
+            {% else %}
+              <p><strong>Domain Name:</strong> {{ results.whois_info.domain_name }}</p>
+              <p><strong>Registrar:</strong> {{ results.whois_info.registrar }}</p>
+              <p><strong>Created On:</strong> {{ results.whois_info.creation_date }}</p>
+              <p><strong>Expires On:</strong> {{ results.whois_info.expiration_date }}</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
       {% endif %}
 
       <!-- Performance -->
-      <div class="mb-2">
-        <h5 class="fw-bold mb-2">⚙️ Performance</h5>
-        <p><strong>Response Time:</strong> {{ results.performance.response_time_ms }} ms</p>
-        <p><strong>Content Size:</strong> {{ results.performance.content_length_kb }} KB</p>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingPerf">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePerf">
+            ⚙️ Performance
+          </button>
+        </h2>
+        <div id="collapsePerf" class="accordion-collapse collapse" data-bs-parent="#scanAccordion">
+          <div class="accordion-body">
+            <p><strong>Response Time:</strong> {{ results.performance.response_time_ms }} ms</p>
+            <p><strong>Content Size:</strong> {{ results.performance.content_length_kb }} KB</p>
+          </div>
+        </div>
       </div>
 
     </div>
-    {% endif %}
-  </main>
+  </div>
+  {% endif %}
+</main>
 
-  <!-- Footer -->
-  <footer class="bg-success text-white text-center py-3 small">
-    &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
-  </footer>
+<!-- Footer -->
+<footer class="bg-success text-white text-center py-3 small">
+  &copy; 2025 SafeSchool Cyber Toolkit · Empowering Cyber Awareness
+</footer>
 
-  <!-- Bootstrap 5 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
