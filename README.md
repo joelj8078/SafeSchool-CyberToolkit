@@ -1,10 +1,10 @@
-# 🛡️ SafeSchool Cyber Toolkit
+# 1. 🛡️ SafeSchool Cyber Toolkit
 
 **A Cyber Awareness and Risk Scanning Dashboard for Schools**
 
 ---
 
-## 📌 Overview
+## 1.1. 📌 Overview
 
 The **SafeSchool Cyber Toolkit** is a full-stack, modular, web-based cybersecurity dashboard designed for schools and educational institutions. It helps non-technical users like school IT staff, teachers, and students:
 - Detect insecure devices and router issues in local networks
@@ -17,39 +17,39 @@ This project was built as part of a final-year internship and aims to promote cy
 
 ---
 
-## 🎯 Features
+## 1.2. 🎯 Features
 
-### ✅ Network Scanner
+### 1.2.1. ✅ Network Scanner
 - Scans local IP ranges and routers
 - Detects open ports and weak services
 - Displays live system information (CPU, RAM, disk, interfaces)
 - Saves scan results as JSON
 - Generates PDF reports
 
-### ✅ Web Scanner
+### 1.2.2. ✅ Web Scanner
 - Analyzes SSL certificates, HTTP headers, technologies, sensitive files
 - Detects open redirect and CMS vulnerabilities
 - Performs WHOIS and performance analysis
 - Visualizes results using radar charts
 - Outputs JSON & PDF reports
 
-### ✅ Phishing Awareness
+### 1.2.3. ✅ Phishing Awareness
 - **Phishing Email Generator** – Simulates real-looking phishing emails
 - **Phishing Analyzer** – Detects red flags in pasted email content
 - Generates phishing analysis reports in PDF
 
-### ✅ Dashboard & Reporting
+### 1.2.4. ✅ Dashboard & Reporting
 - Central UI with separate pages for each scanner
 - Categorized report viewer with download links
 - Responsive design using Bootstrap 5
 
-### ✅ Feedback & Cyber Hygiene
+### 1.2.5. ✅ Feedback & Cyber Hygiene
 - User feedback form (logs saved in `logs/feedback.txt`)
 - Tips for safe browsing, strong passwords, email caution, etc.
 
 ---
 
-## 🖥️ Tech Stack
+## 1.3. 🖥️ Tech Stack
 
 | Layer        | Technology                            |
 |--------------|----------------------------------------|
@@ -61,7 +61,7 @@ This project was built as part of a final-year internship and aims to promote cy
 
 ---
 
-## 📁 Project Structure
+## 1.4. 📁 Project Structure
 
 SafeSchoolToolkit/
 │
@@ -108,17 +108,70 @@ SafeSchoolToolkit/
 
 ---
 
-🚀 Getting Started
-Follow these steps to install and run the project:
+## 1.5. 🚀 Getting Started
 
-1. Clone the Repository
+### 1.5.1. Clone the Repository
+```bash
 git clone https://github.com/your-username/SafeSchoolCyberToolkit.git
 cd SafeSchoolCyberToolkit
+```
 
-2. Create and Activate a Virtual Environment (Recommended)
-On macOS/Linux:
-python3 -m venv venv
-source venv/bin/activate
+### 1.5.2. Create and Activate Virtual Environment (Recommended)
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 1.5.3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 1.5.4. Run the App
+```bash
+python app.py
+```
+The toolkit will be available at: http://localhost:5000
+---
+
+## 1.6. 📊 Usage Instructions
+
+### 1.6.1. 📡 Network Scanner
+- Go to `/network_scanner`
+
+- Click “Scan” to detect local devices and system info
+
+- View results and download report
+
+### 1.6.2. 🌐 Web Scanner
+- Go to `/web_scanner`
+
+- Enter a website URL and click “Scan”
+
+- Review SSL info, headers, technologies, radar chart
+
+- Download security report as PDF
+
+### 1.6.3. 🧪 Phishing Awareness
+- Go to `/phishing_awareness`
+
+- Use the generator to simulate emails or paste suspicious content to analyze
+
+- Generate and download phishing report
+
+### 1.6.4. 📁 Reports
+- Go to `/reports`
+
+- Choose report type and select JSON file
+
+- View summary and download PDF
+
+### 1.6.5. 💡 Cyber Hygiene
+- Go to `/cyber_hygiene` for safe internet practices
+
+### 1.6.6. 📝 Submit Feedback
+- Visit `/feedback` to log bugs, suggestions, or experience
+
 
 
 
