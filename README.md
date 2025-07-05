@@ -108,16 +108,18 @@ SafeSchoolToolkit/
 
 ---
 
-## 🚀 Getting Started
+🚀 Getting Started
+Follow these steps to install and run the project:
 
-### 1. Clone the Repository
-```bash
+1. Clone the Repository
 git clone https://github.com/your-username/SafeSchoolCyberToolkit.git
 cd SafeSchoolCyberToolkit
 
-2️⃣ Create and Activate a Virtual Environment (Recommended)
+2. Create and Activate a Virtual Environment (Recommended)
 On macOS/Linux:
 python3 -m venv venv
 source venv/bin/activate
+
+
 
 
