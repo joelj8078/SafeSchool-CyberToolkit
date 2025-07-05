@@ -15,7 +15,7 @@ The **SafeSchool Cyber Toolkit** is a full-stack, modular, web-based cybersecuri
 
 This project was built as part of a final-year internship and aims to promote cybersecurity awareness and proactive risk assessment in low-resource educational environments.
 
-![Image Alt](https://github.com/joelj8078/SafeSchool-CyberToolkit/blob/0188f31974de421051491134f44f526dfa68b1dd/Screenshot%202025-07-05%20193244.png)
+
 
 ---
 
