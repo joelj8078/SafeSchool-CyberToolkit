@@ -115,7 +115,9 @@ SafeSchoolToolkit/
 git clone https://github.com/your-username/SafeSchoolCyberToolkit.git
 cd SafeSchoolCyberToolkit
 
-### 2. Create and Activate Virtual Environment (Recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+2️⃣ Create and Activate a Virtual Environment (Recommended)
+On macOS/Linux:
+python3 -m venv venv
+source venv/bin/activate
+
 
