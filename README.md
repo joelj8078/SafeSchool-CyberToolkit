@@ -15,7 +15,7 @@ The **SafeSchool Cyber Toolkit** is a full-stack, modular, web-based cybersecuri
 
 This project was built as part of a final-year internship and aims to promote cybersecurity awareness and proactive risk assessment in low-resource educational environments.
 
-
+![alt text](<Screenshot 2025-07-05 193244.png>)
 
 ---
 
@@ -145,6 +145,8 @@ The toolkit will be available at: http://localhost:5000
 
 - View results and download report
 
+![alt text](<Screenshot 2025-07-03 212235.png>)
+
 ### 1.6.2. 🌐 Web Scanner
 - Go to `/web_scanner`
 
@@ -154,12 +156,16 @@ The toolkit will be available at: http://localhost:5000
 
 - Download security report as PDF
 
+![alt text](<Screenshot 2025-07-03 213211.png>)
+
 ### 1.6.3. 🧪 Phishing Awareness
 - Go to `/phishing_awareness`
 
 - Use the generator to simulate emails or paste suspicious content to analyze
 
 - Generate and download phishing report
+
+![alt text](<Screenshot 2025-07-05 195928.png>)
 
 ### 1.6.4. 📁 Reports
 - Go to `/reports`
@@ -168,11 +174,17 @@ The toolkit will be available at: http://localhost:5000
 
 - View summary and download PDF
 
+![alt text](<Screenshot 2025-07-03 214440.png>)
+
 ### 1.6.5. 💡 Cyber Hygiene
 - Go to `/cyber_hygiene` for safe internet practices
 
+![alt text](<Screenshot 2025-07-03 214902.png>)
+
 ### 1.6.6. 📝 Submit Feedback
 - Visit `/feedback` to log bugs, suggestions, or experience
+
+![alt text](<Screenshot 2025-07-03 214805.png>)
 
 
 
